@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_sub_screen.dart';
+import 'account_sub_screen.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -60,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
 //        return BookingsScreen(user: user);
       case 2:
-//        return AccountSubScreen();
+       return AccountSubScreen();
       case 3:
 //        return SupportSubScreen();
     }
