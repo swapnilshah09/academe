@@ -4,6 +4,7 @@ import 'package:academe/constant.dart';
 
 import 'course_info_screen.dart';
 import 'course_list_view.dart';
+import 'package:academe/components/slider.dart';
 
 
 class HomeSubScreen extends StatefulWidget {
@@ -12,6 +13,10 @@ class HomeSubScreen extends StatefulWidget {
 }
 
 class _HomeSubScreenState extends State<HomeSubScreen> {
+//  List sliderData = new List();
+//  sliderData[''];
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -23,6 +28,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: <Widget>[
+            OffersSlider(sliderData: ['assets/images/slider1.png', 'assets/images/slider2.png', 'assets/images/slider3.png']),
               getCategoryUI(),
               Flexible(
                 child: getPopularCourseUI(),
@@ -71,7 +77,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'Popular Course',
+            'Streams',
             textAlign: TextAlign.left,
             style: TextStyle(
               fontWeight: FontWeight.w600,
