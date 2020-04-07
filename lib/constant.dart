@@ -17,6 +17,8 @@ class AcademeAppTheme {
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color chipBackground = Color(0xFFEEF1F3);
   static const Color spacer = Color(0xFFF2F2F2);
+  static const Color green = Color(0xff2ECC40);
+
 
   static const TextTheme textTheme = TextTheme(
     display1: display1,
