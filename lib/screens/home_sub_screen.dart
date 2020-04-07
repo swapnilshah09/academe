@@ -28,7 +28,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: <Widget>[
-            OffersSlider(sliderData: ['assets/images/slider1.png', 'assets/images/slider2.png', 'assets/images/slider3.png']),
+            OffersSlider(sliderData: ['assets/images/Banner1.png', 'assets/images/Banner2.png', 'assets/images/Banner3.png']),
               getCategoryUI(),
               Flexible(
                 child: getPopularCourseUI(),

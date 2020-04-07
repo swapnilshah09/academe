@@ -29,7 +29,6 @@ class OffersSlider extends StatelessWidget {
                   child: Image.asset(
                     imagePath,
                     fit: BoxFit.cover,
-
                   ),
                 ),
               ),
