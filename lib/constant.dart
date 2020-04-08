@@ -18,6 +18,10 @@ class AcademeAppTheme {
   static const Color chipBackground = Color(0xFFEEF1F3);
   static const Color spacer = Color(0xFFF2F2F2);
   static const Color green = Color(0xff2ECC40);
+  static const Color primaryColor = Color(0xff6A2ECC);
+  static const Color primaryComplementaryColor = Color(0xffffffff);
+
+
 
 
   static const TextTheme textTheme = TextTheme(
