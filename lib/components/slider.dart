@@ -28,7 +28,7 @@ class OffersSlider extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   child: Image.asset(
                     imagePath,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -38,7 +38,7 @@ class OffersSlider extends StatelessWidget {
       ));
     });
     return CarouselSlider(
-        enlargeCenterPage: true,
+//        enlargeCenterPage: true,
         pauseAutoPlayOnTouch: Duration(seconds: 10),
         autoPlay: true,
         autoPlayInterval: Duration(seconds: 5),
@@ -47,7 +47,7 @@ class OffersSlider extends StatelessWidget {
         height: MediaQuery
             .of(context)
             .size
-            .height * 0.18,
+            .height * 0.30,
         items: sliderImages
 //        items: sliderData[].((i) {
 //          return Builder(

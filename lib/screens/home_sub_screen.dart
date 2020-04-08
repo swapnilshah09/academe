@@ -1,3 +1,4 @@
+import 'package:academe/screens/course_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'category_list_view.dart';
 import 'package:academe/constant.dart';
@@ -21,20 +22,19 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
   Widget build(BuildContext context) {
 
     return ListView(
-      //shrinkWrap: true,
+      shrinkWrap: false,
+//      physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
-      SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: <Widget>[
-            OffersSlider(sliderData: ['assets/images/Banner1.png', 'assets/images/Banner2.png', 'assets/images/Banner3.png']),
-              getCategoryUI(),
-              Flexible(
-                child: getPopularCourseUI(),
-              ),
-            ],
-          ),
+      Container(
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: <Widget>[
+          OffersSlider(sliderData: ['assets/images/Banner1.png', 'assets/images/Banner2.png', 'assets/images/Banner3.png']),
+            getCategoryUI(),
+            Flexible(
+              child: getPopularCourseUI(),
+            ),
+          ],
         ),
       )
       ],
@@ -52,17 +52,16 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
             'What\'s New',
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               fontSize: 22,
-              letterSpacing: 0.27,
-              color: AcademeAppTheme.darkerText,
+              letterSpacing:1.4
             ),
           ),
         ),
 
         CategoryListView(
           callBack: () {
-            moveTo();
+            moveToCourseDetailScreen();
           },
         ),
       ],
@@ -76,15 +75,42 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            'Streams',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 22,
-              letterSpacing: 0.27,
-              color: AcademeAppTheme.darkerText,
-            ),
+          Row(
+            children: <Widget>[
+              Text(
+                'Top Streams',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  letterSpacing: 1.4,
+                ),
+              ),
+              Spacer(),
+              InkWell(
+                onTap: (){
+
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: Colors.deepPurple,
+
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                        'View All',
+                      style: TextStyle(
+                          color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
           Flexible(
             child: PopularCourseListView(
@@ -103,6 +129,15 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
       context,
       MaterialPageRoute<dynamic>(
         builder: (BuildContext context) => CourseInfoScreen(),
+      ),
+    );
+  }
+
+  void moveToCourseDetailScreen() {
+    Navigator.push<dynamic>(
+      context,
+      MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) => CourseDetailScreen(),
       ),
     );
   }

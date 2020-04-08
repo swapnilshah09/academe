@@ -29,26 +29,24 @@ class _CategoryListViewState extends State<CategoryListView>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 16),
-      child: Container(
-        height: 134,
-        width: double.infinity,
-        child: FutureBuilder<bool>(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox();
-            } else {
-              return ListView.builder(
-                padding: const EdgeInsets.only(
-                    top: 0, bottom: 0, right: 16, left: 16),
-                itemCount: Category.categoryList.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  final int count = Category.categoryList.length > 10
-                      ? 10
-                      : Category.categoryList.length;
+    return Container(
+      height: 134,
+      width: double.infinity,
+      child: FutureBuilder<bool>(
+        future: getData(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (!snapshot.hasData) {
+            return const SizedBox();
+          } else {
+            return ListView.builder(
+              padding: const EdgeInsets.only(
+                  top: 0, bottom: 0, right: 16, left: 16),
+              itemCount: Category.categoryList.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                final int count = Category.categoryList.length > 10
+                    ? 10
+                    : Category.categoryList.length;
 //                  final Animation<double> animation =
 //                      Tween<double>(begin: 0.0, end: 1.0).animate(
 //                          CurvedAnimation(
@@ -57,19 +55,18 @@ class _CategoryListViewState extends State<CategoryListView>
 //                                  curve: Curves.fastOutSlowIn)));
 //                  animationController.forward();
 
-                  return CategoryView(
-                    category: Category.categoryList[index],
+                return CategoryView(
+                  category: Category.categoryList[index],
 //                    animation: animation,
 //                    animationController: animationController,
-                    callback: () {
-                      widget.callBack();
-                    },
-                  );
-                },
-              );
-            }
-          },
-        ),
+                  callback: () {
+                    widget.callBack();
+                  },
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }
@@ -127,115 +124,48 @@ class CategoryView extends StatelessWidget {
                                     children: <Widget>[
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(top: 16),
-                                        child: Text(
-                                          category.title,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                            letterSpacing: 0.27,
-                                            color: AcademeAppTheme
-                                                .darkerText,
-                                          ),
-                                        ),
-                                      ),
-                                      const Expanded(
-                                        child: SizedBox(),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 16, bottom: 8),
+                                            const EdgeInsets.only(top: 30),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
                                           children: <Widget>[
                                             Text(
-                                              '${category.lessonCount} lesson',
+                                              category.title,
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w200,
-                                                fontSize: 12,
-                                                letterSpacing: 0.27,
-                                                color: AcademeAppTheme
-                                                    .grey,
-                                              ),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                 ),
                                             ),
-                                            Container(
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Text(
-                                                    '${category.rating}',
-                                                    textAlign:
-                                                        TextAlign.left,
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w200,
-                                                      fontSize: 18,
-                                                      letterSpacing: 0.27,
-                                                      color:
-                                                          AcademeAppTheme
-                                                              .grey,
-                                                    ),
-                                                  ),
-                                                  Icon(
-                                                    Icons.star,
-                                                    color:
-                                                        AcademeAppTheme
-                                                            .nearlyBlue,
-                                                    size: 20,
-                                                  ),
-                                                ],
-                                              ),
-                                            )
                                           ],
                                         ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            bottom: 16, right: 16),
+                                            top: 4.0, right: 16, bottom: 8),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                              '\₹${category.money}',
+                                              '${category.lessonCount} lesson',
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18,
-                                                letterSpacing: 0.27,
-                                                color: AcademeAppTheme
-                                                    .nearlyBlue,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12,
                                               ),
                                             ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: AcademeAppTheme
-                                                    .nearlyBlue,
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(
-                                                            8.0)),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0,8.0,0,0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
+                                              'UGC-NET',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12,
                                               ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(
-                                                        4.0),
-                                                child: Icon(
-                                                  Icons.add,
-                                                  color:
-                                                      AcademeAppTheme
-                                                          .nearlyWhite,
-                                                ),
-                                              ),
-                                            )
+                                            ),
                                           ],
                                         ),
                                       ),

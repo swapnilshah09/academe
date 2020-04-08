@@ -16,21 +16,21 @@ class Category {
   static List<Category> categoryList = <Category>[
     Category(
       imagePath: 'assets/design_course/interFace1.png',
-      title: 'User interface Design',
+      title: 'General Paper',
       lessonCount: 24,
       money: 399,
       rating: 4.3,
     ),
     Category(
       imagePath: 'assets/design_course/interFace2.png',
-      title: 'User interface Design',
+      title: 'Physics',
       lessonCount: 22,
       money: 299,
       rating: 4.6,
     ),
     Category(
       imagePath: 'assets/design_course/interFace1.png',
-      title: 'User interface Design',
+      title: 'History',
       lessonCount: 24,
       money: 249,
       rating: 4.3,
@@ -47,28 +47,28 @@ class Category {
   static List<Category> popularCourseList = <Category>[
     Category(
       imagePath: 'assets/design_course/interFace3.png',
-      title: 'App Design Course',
+      title: 'UGC-NET',
       lessonCount: 12,
       money: 249,
       rating: 4.8,
     ),
     Category(
       imagePath: 'assets/design_course/interFace4.png',
-      title: 'Web Design Course',
+      title: 'CSIR-NET',
       lessonCount: 28,
       money: 299,
       rating: 4.9,
     ),
     Category(
       imagePath: 'assets/design_course/interFace3.png',
-      title: 'App Design Course',
+      title: 'UG Entrance',
       lessonCount: 12,
       money: 259,
       rating: 4.8,
     ),
     Category(
       imagePath: 'assets/design_course/interFace4.png',
-      title: 'Web Design Course',
+      title: 'PG Entrance',
       lessonCount: 28,
       money: 289,
       rating: 4.9,
