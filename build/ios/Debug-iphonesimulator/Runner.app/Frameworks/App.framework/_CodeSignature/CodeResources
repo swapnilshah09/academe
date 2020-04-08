@@ -10,7 +10,7 @@
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		z069ufIYnpkZLf8rmSQhmE2oMdI=
+		lOK25R0Hfe0M6i7iIpifXJTG4Do=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -18,7 +18,7 @@
 		</data>
 		<key>flutter_assets/LICENSE</key>
 		<data>
-		TTHkJne5daZ4JC4nENS/OYDJU5I=
+		j9kNliFOl1jZ1dlUO3is87B+RRk=
 		</data>
 		<key>flutter_assets/assets/design_course/design_course.png</key>
 		<data>
@@ -56,6 +56,14 @@
 		<data>
 		iYdgNHucZ9XhjOCFhaK9j0kB0xc=
 		</data>
+		<key>flutter_assets/assets/images/Logo.png</key>
+		<data>
+		rwwZDe+9GZZfAiEwgEUb2tOA6AY=
+		</data>
+		<key>flutter_assets/assets/images/academe_logo.png</key>
+		<data>
+		JHAJkgAQ49anynW0FBo1BcCmgww=
+		</data>
 		<key>flutter_assets/assets/images/feedbackImage.png</key>
 		<data>
 		GnlISX8MmS1mWUoETOJPIxiOpZ4=
@@ -86,7 +94,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		zF3mdgpqoFovMCZeLF9stnwIiSk=
+		O0PffevGK1Bz+p2Lilqm5QOh53Y=
 		</data>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -103,11 +111,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			z069ufIYnpkZLf8rmSQhmE2oMdI=
+			lOK25R0Hfe0M6i7iIpifXJTG4Do=
 			</data>
 			<key>hash2</key>
 			<data>
-			yurbeevDgaasEVDsDtYQSZdvEPIPUdQHqpTZlglv89Y=
+			v9UEdt2TeMIQWewTfYeCJItxU1/Y2G3P9gmheHY1jhM=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -125,11 +133,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			TTHkJne5daZ4JC4nENS/OYDJU5I=
+			j9kNliFOl1jZ1dlUO3is87B+RRk=
 			</data>
 			<key>hash2</key>
 			<data>
-			dGUw7X6d/8XEtf1sOAI5m8uTDqw16FPLyawaGj5YO/g=
+			vq1t54Jtb8pIpXWdBQnyWvO9xR4CHpfaA4OUWxNqWcA=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/design_course/design_course.png</key>
@@ -231,6 +239,28 @@
 			BMQqNDHzhcxYbk+x7Fvr6VrPVqr7ReL9St/nkOrJQ1E=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/Logo.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			rwwZDe+9GZZfAiEwgEUb2tOA6AY=
+			</data>
+			<key>hash2</key>
+			<data>
+			+SEvT/2ev7okabFdfBcsBeOqK8SziheRU4lUTQzXIYA=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/academe_logo.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			JHAJkgAQ49anynW0FBo1BcCmgww=
+			</data>
+			<key>hash2</key>
+			<data>
+			BC25JhqufTqUfTOtfpn1a2R8Hs3uWsM78Vvtn+Panqo=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/feedbackImage.png</key>
 		<dict>
 			<key>hash</key>
@@ -312,11 +342,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			zF3mdgpqoFovMCZeLF9stnwIiSk=
+			O0PffevGK1Bz+p2Lilqm5QOh53Y=
 			</data>
 			<key>hash2</key>
 			<data>
-			1Ri43hzQYauO5hNFbclAo1h0IEDQ5UGuIhzXcbZEnC4=
+			17o3jJRWEeMPBKTUDf5NEqbqrra+Vyps6wLjQc5r0FY=
 			</data>
 		</dict>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
