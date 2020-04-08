@@ -2,7 +2,7 @@ import 'package:academe/constant.dart';
 import 'package:academe/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/utils/text_field_validators.dart';
-import 'package:academe/constant.dart';
+import 'package:academe/utils/buttons.dart';
 
 class EmailAuthScreen extends StatefulWidget {
   @override
@@ -32,42 +32,59 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                Image.asset(
-                  'assets/images/academe_logo.png',
-                  fit: BoxFit.contain,
-                  //width: 150,
-                  height: 120,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Welcome to',
+                style: TextStyle(
+                    color: AcademeAppTheme.primaryColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+              Image.asset(
+                'assets/images/academe_logo.png',
+                height: 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                child: Text(
+                  'Enter your email',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Visibility(
-                  visible: !_accountCheckDone,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: emailForm(),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: Text(
+                  'It will let you save your course progress and view your subscriptions.',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
                 ),
-                Visibility(
-                  visible: _accountCheckDone && _accountExists,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: loginForm(),
-                  ),
+              ),
+              Visibility(
+                visible: !_accountCheckDone,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: emailForm(),
                 ),
-                Visibility(
-                  visible: _accountCheckDone && !_accountExists,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: registrationForm(),
-                  ),
+              ),
+              Visibility(
+                visible: _accountCheckDone && _accountExists,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: loginForm(),
                 ),
-              ],
-            ),
-          ],
+              ),
+              Visibility(
+                visible: _accountCheckDone && !_accountExists,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: registrationForm(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -88,30 +105,24 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
             validator: TextFieldValidators.emailValidator,
           ),
           Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: RaisedButton(
-              color: AcademeAppTheme.nearlyBlue,
-              child: Text(
-                'CONTINUE',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-              onPressed: () async {
-                if (_emailFormEmailFieldController.text.trim() ==
-                    'registered@academe.app') {
-                  setState(() {
-                    _accountExists = true;
-                    _accountCheckDone = true;
-                    _loginFormEmailFieldController.text =
-                              _emailFormEmailFieldController.text;
-                  });
-                } else {
-                  setState(() {
-                    _accountExists = false;
-                    _accountCheckDone = true;
-                    _registrationFormEmailFieldController.text =
-                        _emailFormEmailFieldController.text;
-                  });
-                }
+            padding: const EdgeInsets.fromLTRB(0, 30.0, 0, 0),
+            child: Buttons.primary('Continue using Email', () async {
+              if (_emailFormEmailFieldController.text.trim() ==
+                  'registered@academe.app') {
+                setState(() {
+                  _accountExists = true;
+                  _accountCheckDone = true;
+                  _loginFormEmailFieldController.text =
+                      _emailFormEmailFieldController.text;
+                });
+              } else {
+                setState(() {
+                  _accountExists = false;
+                  _accountCheckDone = true;
+                  _registrationFormEmailFieldController.text =
+                      _emailFormEmailFieldController.text;
+                });
+              }
 //                _emailFormEmailFieldController.text =
 //                    _emailFormEmailFieldController.text.trim();
 //                if (_emailFormKey.currentState.validate()) {
@@ -236,8 +247,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
 //                      _loading = false;
 //                    });
 //                }
-              },
-            ),
+            }),
           )
         ],
       ),
@@ -270,18 +280,12 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
             validator: TextFieldValidators.passwordValidator,
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: RaisedButton(
-              color: AcademeAppTheme.nearlyBlue,
-              child: Text(
-                'LOGIN',
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-              onPressed: () async {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()),
-                );
+            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+            child: Buttons.primary('Sign In using Email', () async {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+              );
 //                if (_loginFormKey.currentState.validate()) {
 //                  _loginFormKey.currentState.save();
 //                  setState(() {
@@ -302,28 +306,29 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
 ////                    accountExists = true;
 //                  });
 //                }
+            }),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: FlatButton(
+              child: Text('Don\'t have an account? Register',
+                  style: TextStyle(color: AcademeAppTheme.primaryColor)),
+              onPressed: () {
+                _accountExists = false;
+                _accountCheckDone = true;
+                _registrationFormEmailFieldController.text =
+                    _emailFormEmailFieldController.text;
+//              handleForgotPassword(false);
               },
             ),
           ),
           FlatButton(
-            child:
-            Text('Don\'t have an account? Register', style: TextStyle(color: Colors.blue)),
-            onPressed: () {
-              _accountExists = false;
-              _accountCheckDone = true;
-              _registrationFormEmailFieldController.text =
-                  _emailFormEmailFieldController.text;
-//              handleForgotPassword(false);
-            },
-          ),
-          FlatButton(
-            child:
-                Text('Forgot Password?', style: TextStyle(color: Colors.blue)),
+            child: Text('Forgot Password?',
+                style: TextStyle(color: AcademeAppTheme.primaryColor)),
             onPressed: () {
 //              handleForgotPassword(false);
             },
           ),
-
         ],
       ),
     );
@@ -364,14 +369,10 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
             validator: TextFieldValidators.passwordValidator,
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: RaisedButton(
-              color: AcademeAppTheme.nearlyBlue,
-              child: Text(
-                'REGISTER',
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-              onPressed: () async {
+            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+            child: Buttons.primary(
+              'Sign Up using Email',
+              () async {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => MyHomePage()),
@@ -401,17 +402,20 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
               },
             ),
           ),
-          FlatButton(
-            child:
-            Text('Already have an account? Login', style: TextStyle(color: Colors.blue)),
-            onPressed: () {
-              setState(() {
-                _accountExists = true;
-                _accountCheckDone = true;
-                _loginFormEmailFieldController.text =
-                    _registrationFormEmailFieldController.text;
-              });
-            },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: FlatButton(
+              child: Text('Already have an account? Login',
+                  style: TextStyle(color: AcademeAppTheme.primaryColor)),
+              onPressed: () {
+                setState(() {
+                  _accountExists = true;
+                  _accountCheckDone = true;
+                  _loginFormEmailFieldController.text =
+                      _registrationFormEmailFieldController.text;
+                });
+              },
+            ),
           )
         ],
       ),
@@ -420,7 +424,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
 
   Widget passwordSuffixIcon() {
     return IconButton(
-      color: _obscureText ? Colors.grey : AcademeAppTheme.nearlyBlue,
+      color: _obscureText ? Colors.grey : AcademeAppTheme.primaryColor,
       icon: Icon(Icons.remove_red_eye),
       onPressed: () {
         setState(() {

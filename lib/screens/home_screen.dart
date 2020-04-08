@@ -1,3 +1,4 @@
+import 'package:academe/screens/email_auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'home_sub_screen.dart';
 import 'account_sub_screen.dart';
@@ -14,9 +15,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Academe'),
-      ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           selectedFontSize: 12,
@@ -59,9 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return HomeSubScreen();
       case 1:
+        return AccountSubScreen();
 //        return BookingsScreen(user: user);
       case 2:
-       return AccountSubScreen();
+       return EmailAuthScreen();
       case 3:
 //        return SupportSubScreen();
     }
