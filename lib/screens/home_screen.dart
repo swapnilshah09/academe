@@ -57,12 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return HomeSubScreen();
       case 1:
-        return AccountSubScreen();
-//        return BookingsScreen(user: user);
+        return Center(child: Text('Subscriptions Screen Will Appear Here'));
       case 2:
         return AccountSubScreen();
       case 3:
-//        return SupportSubScreen();
+        return Center(child: Text('Support Screen Will Appear Here'));
     }
 
     return SizedBox();
