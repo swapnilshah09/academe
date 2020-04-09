@@ -1,4 +1,5 @@
 import 'package:academe/screens/course_detail_screen.dart';
+import 'package:academe/screens/stream_detail.dart';
 import 'package:flutter/material.dart';
 import 'category_list_view.dart';
 import 'package:academe/constant.dart';
@@ -152,7 +153,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
     Navigator.push<dynamic>(
       context,
       MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) => CourseInfoScreen(),
+        builder: (BuildContext context) => StreamDetailScreen(),
       ),
     );
   }

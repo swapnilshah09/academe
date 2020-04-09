@@ -62,10 +62,28 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Course Detail'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _controller.value.isPlaying
+                ? _controller.pause()
+                : _controller.play();
+          });
+        },
+        child: Icon(
+          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        ),
       ),
       body: ListView(
         children: <Widget>[
@@ -89,7 +107,17 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           Column(
             children: <Widget>[
               Container(padding: const EdgeInsets.only(top: 20.0)),
-              const Text('With remote mp4'),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                        'Introduction',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.all(20),
                 child: AspectRatio(
@@ -100,7 +128,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       VideoPlayer(_controller),
                       ClosedCaption(text: _controller.value.caption.text),
                       _PlayPauseOverlay(controller: _controller),
-                      VideoProgressIndicator(_controller, allowScrubbing: true),
+                      VideoProgressIndicator(_controller, allowScrubbing: false),
                     ],
                   ),
                 ),

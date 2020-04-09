@@ -51,7 +51,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Stream detail'),
+        title: Text('UGC-NET'),
       ),
       body: ListView(
         children: <Widget>[
@@ -73,78 +73,21 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
 //                ),
 //              ),
 
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                gradient: LinearGradient(
-                  // Where the linear gradient begins and ends
-
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  // Add one stop for each color. Stops should increase from 0 to 1
-                  stops: [0.2, 0.9],
-                  colors: [
-                    // Colors are easy thanks to Flutter's Colors class.
-                    Colors.deepPurple[700],
-                    Colors.blue[600],
-                  ],
-                ),
-              ),
-              child: InkWell(
-                onTap: (){
-
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            '₹ 299',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            'Purchase Course',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 4.0),
-                            child: Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+          Container(
+            child: Image.asset(
+                'assets/images/StreamImage1.png',
+              fit: BoxFit.cover,
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 16),
+            padding: EdgeInsets.all(16.0),
             child: Container(
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                       Text(
-                        'What is covered in this course?',
+                        'About UGC-NET',
                         style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
                       ),
                     ],
@@ -152,7 +95,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'The Political Science course is an important part of the UGC-NET. This course will take your through 25 sessions that cover Politics, Elections, Parties, and Election Commission of India.',
+                      'The UGC-NET is one of the top streams chosen by Indian students to extend their careers. Academe has gathered the best courses for you to successfully crack the UGC-NET exam. Start learning!',
                       style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
 
                     ),
@@ -165,41 +108,33 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
             child: Container(
-              child: Card(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'All Sessions',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            Spacer(),
-                            Text(
-                              '23 Sessions',
-                              style: TextStyle(fontSize: 16, color: AcademeAppTheme.lightText),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
-                        ),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            '22 Courses for UGC-NET',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
                       ),
                     ),
-                    ListView.builder(
+                  ),
+                  ListView.builder(
 //                    physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: courseData.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return courseList(courseData[index]);
-                        }
+                      shrinkWrap: true,
+                      itemCount: courseData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return courseList(courseData[index]);
+                      }
 
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ),
@@ -258,20 +193,12 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
             child: Row(
               children: <Widget>[
                 Text(
-                  data['money'].toString(),
+                  'View Course',
                   style: TextStyle(
-                      color: AcademeAppTheme.lightText,
+                      color: AcademeAppTheme.primaryColor,
                       fontSize: 12
                   ),
                 ),
-                Spacer(),
-                Text(
-                  'Purchase on '+data['purchaseDate'],
-                  style: TextStyle(
-                      color: AcademeAppTheme.lightText,
-                      fontSize: 12
-                  ),
-                )
               ],
             ),
           )
