@@ -26,10 +26,3 @@ class Buttons {
     );
   }
 }
-
-class primaryButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}

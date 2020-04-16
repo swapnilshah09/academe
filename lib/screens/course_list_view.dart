@@ -18,7 +18,7 @@ class _PopularCourseListViewState extends State<PopularCourseListView>
   void initState() {
 //    animationController = AnimationController(
 //        duration: const Duration(milliseconds: 2000), vsync: this);
-//    super.initState();
+    super.initState();
   }
 
   Future<bool> getData() async {
@@ -41,7 +41,7 @@ class _PopularCourseListViewState extends State<PopularCourseListView>
               padding: const EdgeInsets.all(8),
 //              physics: const BouncingScrollPhysics(),
 //              scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
               children: List<Widget>.generate(
                 Category.popularCourseList.length,
                 (int index) {
@@ -101,114 +101,107 @@ class CategoryView extends StatelessWidget {
 //    return AnimatedBuilder(
 //      animation: animationController,
 //      builder: (BuildContext context, Widget child) {
-        return InkWell(
-          splashColor: Colors.transparent,
-          onTap: () {
-            callback();
-          },
-          child: SizedBox(
-            height: 280,
-            child: Stack(
-              alignment: AlignmentDirectional.bottomCenter,
-              children: <Widget>[
-                Container(
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-//                                color: HexColor('#F8FAFB'),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(16.0)),
-                            // border: new Border.all(
-                            //     color: AcademeAppTheme.notWhite),
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              Expanded(
-                                child: Container(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 8, left: 20, right: 16),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              category.title,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 4,
-                                            left: 20,
-                                            right: 16,
-                                            bottom: 4),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              category.lessonCount.toString()+' Courses',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 48,
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 24, right: 16, left: 16),
+    return InkWell(
+      splashColor: Colors.transparent,
+      onTap: () {
+        callback();
+      },
+      child: SizedBox(
+        height: 280,
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
+          children: <Widget>[
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
                     child: Container(
                       decoration: BoxDecoration(
+//                                color: HexColor('#F8FAFB'),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(16.0)),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              color: AcademeAppTheme.grey
-                                  .withOpacity(0.2),
-                              offset: const Offset(0.0, 0.0),
-                              blurRadius: 6.0),
-                        ],
+                        // border: new Border.all(
+                        //     color: AcademeAppTheme.notWhite),
                       ),
-                      child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(16.0)),
-                        child: AspectRatio(
-                            aspectRatio: 1.28,
-                            child: Image.asset(category.imagePath)),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8, left: 20, right: 16),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          category.title,
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 4, left: 20, right: 16, bottom: 4),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          category.lessonCount.toString() +
+                                              ' Courses',
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: 48,
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 24, right: 16, left: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: AcademeAppTheme.grey.withOpacity(0.2),
+                          offset: const Offset(0.0, 0.0),
+                          blurRadius: 6.0),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                    child: AspectRatio(
+                        aspectRatio: 1.28,
+                        child: Image.asset(category.imagePath)),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
 //      },
 //    );
   }
