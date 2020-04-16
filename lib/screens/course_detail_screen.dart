@@ -1,22 +1,16 @@
+import 'package:academe/screens/purchase_course_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'package:video_player/video_player.dart';
 
 class CourseDetailScreen extends StatefulWidget {
-  Map <dynamic,dynamic> popularCourses;
-
-  CourseDetailScreen(
-      {@required this.popularCourses,
-  });
-
   @override
   _CourseDetailScreenState createState() => _CourseDetailScreenState();
 }
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
-
   VideoPlayerController _controller;
-  var courseData = <Map> [
+  var courseData = <Map>[
     {
       'imagePath': 'assets/design_course/interFace3.png',
       'title': 'User interface Design',
@@ -55,7 +49,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(
-      'http://159.65.154.185:89/storage/1583925566_sample-video.mp4',
+      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
 //      closedCaptionFile: _loadCaptions(),
     );
 
@@ -64,8 +58,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     });
     _controller.setLooping(true);
     _controller.initialize();
-    print('--------------test---------------');
-    print(widget.popularCourses['name']);
   }
 
   @override
@@ -119,8 +111,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                        'Introduction',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      'Introduction',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -135,7 +128,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       VideoPlayer(_controller),
                       ClosedCaption(text: _controller.value.caption.text),
                       _PlayPauseOverlay(controller: _controller),
-                      VideoProgressIndicator(_controller, allowScrubbing: false),
+                      VideoProgressIndicator(_controller,
+                          allowScrubbing: false),
                     ],
                   ),
                 ),
@@ -162,8 +156,14 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 ),
               ),
               child: InkWell(
-                onTap: (){
-
+                onTap: () {
+                  Navigator.push<dynamic>(
+                    context,
+                    MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) =>
+                          PurchaseCourseScreen(),
+                    ),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -206,27 +206,27 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ),
           ),
           Padding(
-              padding: EdgeInsets.only(left: 16),
+            padding: EdgeInsets.only(left: 16),
             child: Container(
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                       Text(
-                          'What is covered in this course?',
-                        style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
+                        'What is covered in this course?',
+                        style: TextStyle(
+                            fontSize: 12, color: AcademeAppTheme.lightText),
                       ),
                     ],
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
-                        'The Political Science course is an important part of the UGC-NET. This course will take your through 25 sessions that cover Politics, Elections, Parties, and Election Commission of India.',
-                      style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
-
+                      'The Political Science course is an important part of the UGC-NET. This course will take your through 25 sessions that cover Politics, Elections, Parties, and Election Commission of India.',
+                      style: TextStyle(
+                          fontSize: 12, color: AcademeAppTheme.lightText),
                     ),
                   )
-
                 ],
               ),
             ),
@@ -245,13 +245,16 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                           children: <Widget>[
                             Text(
                               'All Sessions',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left,
                             ),
                             Spacer(),
                             Text(
                               '23 Sessions',
-                              style: TextStyle(fontSize: 16, color: AcademeAppTheme.lightText),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: AcademeAppTheme.lightText),
                               textAlign: TextAlign.left,
                             ),
                           ],
@@ -264,9 +267,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                         itemCount: courseData.length,
                         itemBuilder: (BuildContext context, int index) {
                           return courseList(courseData[index]);
-                        }
-
-                    )
+                        })
                   ],
                 ),
               ),
@@ -288,24 +289,17 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             width: 80.0,
             height: 80.0,
             fit: BoxFit.contain,
-          )
-      ),
+          )),
       title: Row(
         children: <Widget>[
           Text(
             data['title'],
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16
-            ),
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
           ),
           Spacer(),
           Text(
             data['duration'],
-            style: TextStyle(
-                color: AcademeAppTheme.lightText,
-                fontSize: 12
-            ),
+            style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
           )
         ],
       ),
@@ -315,10 +309,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             children: <Widget>[
               Text(
                 data['subtitle'],
-                style: TextStyle(
-                    color: AcademeAppTheme.lightText,
-                    fontSize: 12
-                ),
+                style:
+                    TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
               ),
             ],
           ),
@@ -328,18 +320,14 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               children: <Widget>[
                 Text(
                   data['money'].toString(),
-                  style: TextStyle(
-                      color: AcademeAppTheme.lightText,
-                      fontSize: 12
-                  ),
+                  style:
+                      TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
                 ),
                 Spacer(),
                 Text(
-                  'Purchase on '+data['purchaseDate'],
-                  style: TextStyle(
-                      color: AcademeAppTheme.lightText,
-                      fontSize: 12
-                  ),
+                  'Purchase on ' + data['purchaseDate'],
+                  style:
+                      TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
                 )
               ],
             ),
@@ -365,15 +353,15 @@ class _PlayPauseOverlay extends StatelessWidget {
           child: controller.value.isPlaying
               ? SizedBox.shrink()
               : Container(
-            color: Colors.black26,
-            child: Center(
-              child: Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 100.0,
-              ),
-            ),
-          ),
+                  color: Colors.black26,
+                  child: Center(
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 100.0,
+                    ),
+                  ),
+                ),
         ),
         GestureDetector(
           onTap: () {
