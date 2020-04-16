@@ -83,8 +83,8 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
         ),
 
         CategoryListView(
-          callBack: () {
-            moveToCourseDetailScreen();
+          callBack: (popularCourses) {
+            moveToCourseDetailScreen(popularCourses);
           },
         ),
       ],
@@ -156,11 +156,11 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
     );
   }
 
-  void moveToCourseDetailScreen() {
+  void moveToCourseDetailScreen(Map<dynamic,dynamic> popularCourses) {
     Navigator.push<dynamic>(
       context,
       MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) => CourseDetailScreen(),
+        builder: (BuildContext context) => CourseDetailScreen(popularCourses: popularCourses,),
       ),
     );
   }

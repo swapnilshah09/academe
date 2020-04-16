@@ -11,12 +11,17 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedSubScreen = 0;
 
+  List <AppBar> appbar = [
+    null,
+    AppBar(title: Text('Subscriptions')),
+    null,
+    AppBar(title: Text('Support'),)
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Academe'),
-      ),
+      appBar: appbar != null ? appbar[_selectedSubScreen] : null,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 12,

@@ -1,6 +1,5 @@
-import 'package:academe/constant.dart';
-import 'models/category.dart';
-//import 'main.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
 
 class CategoryListView extends StatefulWidget {
@@ -13,18 +12,31 @@ class CategoryListView extends StatefulWidget {
 
 class _CategoryListViewState extends State<CategoryListView>
     with TickerProviderStateMixin {
-  AnimationController animationController;
+
+  Map <dynamic,dynamic> popularCourses;
 
   @override
   void initState() {
-    animationController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
     super.initState();
+    getPopularCourses();
   }
 
   Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 50));
+    await Future<dynamic>.delayed(const Duration(seconds: 1));
     return true;
+  }
+
+  Future<bool> getPopularCourses() async {
+    var url = 'http://159.65.154.185:89/api/popularcourses';
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      popularCourses = jsonResponse['data'];
+//      print();
+      print('Number of Courses about http: $popularCourses.');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
   }
 
   @override
@@ -41,26 +53,13 @@ class _CategoryListViewState extends State<CategoryListView>
             return ListView.builder(
               padding: const EdgeInsets.only(
                   top: 0, bottom: 0, right: 16, left: 16),
-              itemCount: Category.categoryList.length,
+              itemCount: popularCourses['courses'].length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {
-                final int count = Category.categoryList.length > 10
-                    ? 10
-                    : Category.categoryList.length;
-//                  final Animation<double> animation =
-//                      Tween<double>(begin: 0.0, end: 1.0).animate(
-//                          CurvedAnimation(
-//                              parent: animationController,
-//                              curve: Interval((1 / count) * index, 1.0,
-//                                  curve: Curves.fastOutSlowIn)));
-//                  animationController.forward();
-
                 return CategoryView(
-                  category: Category.categoryList[index],
-//                    animation: animation,
-//                    animationController: animationController,
+                  category: popularCourses['courses'][index],
                   callback: () {
-                    widget.callBack();
+                    widget.callBack(popularCourses['courses'][index]);
                   },
                 );
               },
@@ -76,21 +75,14 @@ class CategoryView extends StatelessWidget {
   const CategoryView(
       {Key key,
       this.category,
-//      this.animationController,
-//      this.animation,
       this.callback})
       : super(key: key);
 
   final VoidCallback callback;
-  final Category category;
-//  final AnimationController animationController;
-//  final Animation<dynamic> animation;
+  final category;
 
   @override
   Widget build(BuildContext context) {
-//    return AnimatedBuilder(
-//      animation: animationController,
-//      builder: (BuildContext context, Widget child) {
         return InkWell(
           splashColor: Colors.transparent,
           onTap: () {
@@ -109,7 +101,6 @@ class CategoryView extends StatelessWidget {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-//                                color: HexColor('#F8FAFB'),
                             borderRadius: const BorderRadius.all(
                                 Radius.circular(16.0)),
                           ),
@@ -128,7 +119,7 @@ class CategoryView extends StatelessWidget {
                                         child: Row(
                                           children: <Widget>[
                                             Text(
-                                              category.title,
+                                              category['name'],
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
@@ -144,7 +135,7 @@ class CategoryView extends StatelessWidget {
                                         child: Row(
                                           children: <Widget>[
                                             Text(
-                                              '${category.lessonCount} lesson',
+                                              '${category['total_sessions'].toString()} lesson',
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w400,
@@ -159,7 +150,7 @@ class CategoryView extends StatelessWidget {
                                         child: Row(
                                           children: <Widget>[
                                             Text(
-                                              'UGC-NET',
+                                              category['stream_name'],
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w400,
@@ -191,7 +182,11 @@ class CategoryView extends StatelessWidget {
                               const BorderRadius.all(Radius.circular(16.0)),
                           child: AspectRatio(
                               aspectRatio: 1.0,
-                              child: Image.asset(category.imagePath)),
+                              child: Image.network(
+                                  category['courses_image'] !=null ? category['courses_image'] : 'http://159.65.154.185:89/storage/Hindi-Literature.jpeg',
+                                fit: BoxFit.contain,
+                              ),
+                          ),
                         )
                       ],
                     ),
@@ -201,7 +196,5 @@ class CategoryView extends StatelessWidget {
             ),
           ),
         );
-//      },
-//    );
   }
 }
