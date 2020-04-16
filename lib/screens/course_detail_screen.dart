@@ -1,9 +1,14 @@
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'package:video_player/video_player.dart';
 
 class CourseDetailScreen extends StatefulWidget {
+  Map <dynamic,dynamic> popularCourses;
+
+  CourseDetailScreen(
+      {@required this.popularCourses,
+  });
+
   @override
   _CourseDetailScreenState createState() => _CourseDetailScreenState();
 }
@@ -50,7 +55,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+      'http://159.65.154.185:89/storage/1583925566_sample-video.mp4',
 //      closedCaptionFile: _loadCaptions(),
     );
 
@@ -59,6 +64,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     });
     _controller.setLooping(true);
     _controller.initialize();
+    print('--------------test---------------');
+    print(widget.popularCourses['name']);
   }
 
   @override

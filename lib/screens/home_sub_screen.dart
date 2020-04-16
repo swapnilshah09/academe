@@ -3,8 +3,6 @@ import 'package:academe/screens/stream_detail.dart';
 import 'package:flutter/material.dart';
 import 'category_list_view.dart';
 import 'package:academe/constant.dart';
-
-import 'course_info_screen.dart';
 import 'course_list_view.dart';
 import 'package:academe/components/slider.dart';
 
@@ -85,8 +83,8 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
         ),
 
         CategoryListView(
-          callBack: () {
-            moveToCourseDetailScreen();
+          callBack: (popularCourses) {
+            moveToCourseDetailScreen(popularCourses);
           },
         ),
       ],
@@ -158,11 +156,11 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
     );
   }
 
-  void moveToCourseDetailScreen() {
+  void moveToCourseDetailScreen(Map<dynamic,dynamic> popularCourses) {
     Navigator.push<dynamic>(
       context,
       MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) => CourseDetailScreen(),
+        builder: (BuildContext context) => CourseDetailScreen(popularCourses: popularCourses,),
       ),
     );
   }

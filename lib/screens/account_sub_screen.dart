@@ -73,6 +73,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 
   Widget emailAuthScreen(BuildContext context) {
     return Scaffold(
+      appBar: null,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
