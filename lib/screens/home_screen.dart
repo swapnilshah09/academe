@@ -1,4 +1,5 @@
 import 'package:academe/screens/account_sub_screen.dart';
+import 'package:academe/screens/home_subscreen.dart';
 import 'package:flutter/material.dart';
 import 'home_sub_screen.dart';
 
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget showSubScreen(int index) {
     switch (index) {
       case 0:
-        return HomeSubScreen();
+        return HomeSubScreenNew();
       case 1:
         return Center(child: Text('Subscriptions Screen Will Appear Here'));
       case 2:
