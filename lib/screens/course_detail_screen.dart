@@ -4,6 +4,11 @@ import 'package:academe/constant.dart';
 import 'package:video_player/video_player.dart';
 
 class CourseDetailScreen extends StatefulWidget {
+  Map <dynamic,dynamic> popularCourses;
+
+  CourseDetailScreen(
+      {@required this.popularCourses,
+      });
   @override
   _CourseDetailScreenState createState() => _CourseDetailScreenState();
 }
