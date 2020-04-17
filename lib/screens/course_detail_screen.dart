@@ -4,11 +4,11 @@ import 'package:academe/constant.dart';
 import 'package:video_player/video_player.dart';
 
 class CourseDetailScreen extends StatefulWidget {
-  Map <dynamic,dynamic> popularCourses;
+  Map<dynamic, dynamic> popularCourses;
 
-  CourseDetailScreen(
-      {@required this.popularCourses,
-      });
+  CourseDetailScreen({
+    @required this.popularCourses,
+  });
   @override
   _CourseDetailScreenState createState() => _CourseDetailScreenState();
 }
@@ -165,8 +165,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   Navigator.push<dynamic>(
                     context,
                     MaterialPageRoute<dynamic>(
-                      builder: (BuildContext context) =>
-                          PurchaseCourseScreen(),
+                      builder: (BuildContext context) => PurchaseCourseScreen(),
                     ),
                   );
                 },
@@ -267,7 +266,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       ),
                     ),
                     ListView.builder(
-//                    physics: const NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: courseData.length,
                         itemBuilder: (BuildContext context, int index) {

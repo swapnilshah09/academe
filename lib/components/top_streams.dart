@@ -50,13 +50,12 @@ class _TopStreamsState extends State<TopStreams>
             return const SizedBox();
           } else {
             return GridView(
-              shrinkWrap: false,
+              shrinkWrap: true,
               padding: const EdgeInsets.all(8),
               physics: NeverScrollableScrollPhysics(),
               children: List<Widget>.generate(
                 Category.popularCourseList.length,
                 (int index) {
-                  final int count = Category.popularCourseList.length;
                   return Container(
                     height: 300,
                     child: CategoryView(
