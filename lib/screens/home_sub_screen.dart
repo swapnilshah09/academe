@@ -3,9 +3,7 @@ import 'package:academe/components/top_streams.dart';
 import 'package:academe/screens/course_detail_screen.dart';
 import 'package:academe/screens/stream_detail.dart';
 import 'package:flutter/material.dart';
-//import '../components/category_list_view.dart';
 import 'package:academe/constant.dart';
-//import '../components/course_list_view.dart';
 import 'package:academe/components/slider.dart';
 
 
@@ -15,9 +13,6 @@ class HomeSubScreen extends StatefulWidget {
 }
 
 class _HomeSubScreenState extends State<HomeSubScreen> {
-//  List sliderData = new List();
-//  sliderData[''];
-
 
   @override
   Widget build(BuildContext context) {
