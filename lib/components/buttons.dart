@@ -25,4 +25,30 @@ class Buttons {
       ),
     );
   }
+  ///Mini primary button, takes button [text] and
+  ///button [onTap]
+  static Widget miniPrimaryButton(String text, Function onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AcademeAppTheme.primaryColor,
+          borderRadius: BorderRadius.all(Radius.circular(7)),
+        ),
+        height: 43,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(11,8,8,9),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 16,
+                  color: AcademeAppTheme.primaryComplementaryColor,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

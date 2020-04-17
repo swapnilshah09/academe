@@ -1,9 +1,9 @@
 import 'package:academe/screens/course_detail_screen.dart';
 import 'package:academe/screens/stream_detail.dart';
 import 'package:flutter/material.dart';
-import 'category_list_view.dart';
+import '../components/category_list_view.dart';
 import 'package:academe/constant.dart';
-import 'course_list_view.dart';
+import '../components/course_list_view.dart';
 import 'package:academe/components/slider.dart';
 
 

@@ -1,7 +1,7 @@
 import 'package:academe/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/utils/text_field_validators.dart';
-import 'package:academe/utils/buttons.dart';
+import 'package:academe/components/buttons.dart';
 
 
 
