@@ -2,15 +2,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
 
-class CategoryListView extends StatefulWidget {
-  const CategoryListView({Key key, this.callBack}) : super(key: key);
+class NewCourses extends StatefulWidget {
+  const NewCourses({Key key, this.callBack}) : super(key: key);
 
   final Function callBack;
   @override
-  _CategoryListViewState createState() => _CategoryListViewState();
+  _NewCoursesState createState() => _NewCoursesState();
 }
 
-class _CategoryListViewState extends State<CategoryListView>
+class _NewCoursesState extends State<NewCourses>
     with TickerProviderStateMixin {
 
   Map <dynamic,dynamic> popularCourses;

@@ -1,29 +1,42 @@
 import 'package:academe/constant.dart';
-import 'models/category.dart';
-//import 'package:best_flutter_ui_templates/main.dart';
+import '../screens/models/category.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
-class PopularCourseListView extends StatefulWidget {
-  const PopularCourseListView({Key key, this.callBack}) : super(key: key);
+class TopStreams extends StatefulWidget {
+  const TopStreams({Key key, this.callBack}) : super(key: key);
 
   final Function callBack;
   @override
-  _PopularCourseListViewState createState() => _PopularCourseListViewState();
+  _TopStreamsState createState() => _TopStreamsState();
 }
 
-class _PopularCourseListViewState extends State<PopularCourseListView>
+class _TopStreamsState extends State<TopStreams>
     with TickerProviderStateMixin {
-//  AnimationController animationController;
+  Map <dynamic,dynamic> popularStreams;
   @override
   void initState() {
-//    animationController = AnimationController(
-//        duration: const Duration(milliseconds: 2000), vsync: this);
     super.initState();
+    getTopStreams();
   }
 
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
     return true;
+  }
+
+  Future<bool> getTopStreams() async {
+    var url = 'http://159.65.154.185:89/api/popularStreams';
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      popularStreams = jsonResponse['data'];
+//      print();
+      print('Number of Courses about http: $popularStreams.');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
   }
 
   @override
@@ -39,22 +52,11 @@ class _PopularCourseListViewState extends State<PopularCourseListView>
             return GridView(
               shrinkWrap: false,
               padding: const EdgeInsets.all(8),
-//              physics: const BouncingScrollPhysics(),
-//              scrollDirection: Axis.vertical,
               physics: NeverScrollableScrollPhysics(),
               children: List<Widget>.generate(
                 Category.popularCourseList.length,
                 (int index) {
                   final int count = Category.popularCourseList.length;
-//                  final Animation<double> animation =
-//                      Tween<double>(begin: 0.0, end: 1.0).animate(
-//                    CurvedAnimation(
-//                      parent: animationController,
-//                      curve: Interval((1 / count) * index, 1.0,
-//                          curve: Curves.fastOutSlowIn),
-//                    ),
-//                  );
-//                  animationController.forward();
                   return Container(
                     height: 300,
                     child: CategoryView(
@@ -62,8 +64,6 @@ class _PopularCourseListViewState extends State<PopularCourseListView>
                         widget.callBack();
                       },
                       category: Category.popularCourseList[index],
-//                    animation: animation,
-//                    animationController: animationController,
                     ),
                   );
                 },
@@ -72,7 +72,6 @@ class _PopularCourseListViewState extends State<PopularCourseListView>
                 crossAxisCount: 2,
                 mainAxisSpacing: 32.0,
                 crossAxisSpacing: 32.0,
-//                childAspectRatio: 0.8,
               ),
             );
           }
@@ -86,21 +85,14 @@ class CategoryView extends StatelessWidget {
   const CategoryView(
       {Key key,
       this.category,
-//      this.animationController,
-//      this.animation,
       this.callback})
       : super(key: key);
 
   final VoidCallback callback;
   final Category category;
-//  final AnimationController animationController;
-//  final Animation<dynamic> animation;
 
   @override
   Widget build(BuildContext context) {
-//    return AnimatedBuilder(
-//      animation: animationController,
-//      builder: (BuildContext context, Widget child) {
     return InkWell(
       splashColor: Colors.transparent,
       onTap: () {

@@ -1,9 +1,9 @@
 import 'package:academe/screens/course_detail_screen.dart';
 import 'package:academe/screens/stream_detail.dart';
 import 'package:flutter/material.dart';
-import 'category_list_view.dart';
+import '../components/new_courses.dart';
 import 'package:academe/constant.dart';
-import 'course_list_view.dart';
+import '../components/top_streams.dart';
 import 'package:academe/components/slider.dart';
 
 
@@ -82,7 +82,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
           ),
         ),
 
-        CategoryListView(
+        NewCourses(
           callBack: (popularCourses) {
             moveToCourseDetailScreen(popularCourses);
           },
@@ -136,7 +136,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
             ],
           ),
           Flexible(
-            child: PopularCourseListView(
+            child: TopStreams(
               callBack: () {
                 moveTo();
               },
