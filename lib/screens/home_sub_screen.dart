@@ -1,9 +1,11 @@
+import 'package:academe/components/new_courses.dart';
+import 'package:academe/components/top_streams.dart';
 import 'package:academe/screens/course_detail_screen.dart';
 import 'package:academe/screens/stream_detail.dart';
 import 'package:flutter/material.dart';
-import '../components/new_courses.dart';
+//import '../components/category_list_view.dart';
 import 'package:academe/constant.dart';
-import '../components/top_streams.dart';
+//import '../components/course_list_view.dart';
 import 'package:academe/components/slider.dart';
 
 

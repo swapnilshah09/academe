@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
-import 'package:academe/utils/buttons.dart';
+import 'package:academe/components/buttons.dart';
 
 class PurchaseCourseScreen extends StatefulWidget {
   @override

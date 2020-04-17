@@ -47,7 +47,7 @@ class OffersSlider extends StatelessWidget {
         height: MediaQuery
             .of(context)
             .size
-            .height * 0.30,
+            .height * 0.25,
         items: sliderImages
 //        items: sliderData[].((i) {
 //          return Builder(
