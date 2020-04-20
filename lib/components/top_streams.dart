@@ -56,7 +56,7 @@ class _TopStreamsState extends State<TopStreams>
             return const SizedBox();
           } else {
             return GridView(
-              shrinkWrap: false,
+              shrinkWrap: true,
               padding: const EdgeInsets.all(8),
               physics: NeverScrollableScrollPhysics(),
               children: List<Widget>.generate(

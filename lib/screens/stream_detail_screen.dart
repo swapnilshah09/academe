@@ -128,6 +128,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                   ListView.builder(
 //                    physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: courseData.length,
                       itemBuilder: (BuildContext context, int index) {
                         return courseList(courseData[index]);

@@ -1,7 +1,6 @@
 import 'package:academe/screens/account_sub_screen.dart';
-import 'package:academe/screens/home_subscreen.dart';
+import 'package:academe/screens/home_sub_screen.dart';
 import 'package:flutter/material.dart';
-import 'home_sub_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -46,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         onTap: _onItemTap,
       ),
-      body: SafeArea(child: showSubScreen(_selectedSubScreen)),
+      body: showSubScreen(_selectedSubScreen),
     );
   }
 
