@@ -1,11 +1,12 @@
 import 'package:academe/components/new_courses.dart';
+import 'package:academe/screens/all_streams_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/screens/course_detail_screen.dart';
 import 'package:academe/screens/stream_detail_screen.dart';
 import 'package:academe/constant.dart';
 import 'package:academe/components/slider.dart';
 import 'package:academe/components/buttons.dart';
-import 'package:academe/components/top_streams.dart';
+import 'package:academe/components/streams_view.dart';
 
 class HomeSubScreen extends StatefulWidget {
   @override
@@ -73,11 +74,17 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
               ),
               Buttons.miniPrimaryButton('View All', () {
                 //Navigate to all streams
+                Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => AllStreams(),
+                  ),
+                );
               })
             ],
           ),
         ),
-        TopStreams(
+        StreamsView(
           callBack: () {
             moveToStreamDetailScreen();
           },
