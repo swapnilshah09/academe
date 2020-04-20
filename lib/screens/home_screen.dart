@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget showSubScreen(int index) {
     switch (index) {
       case 0:
-        return HomeSubScreenNew();
+        return HomeSubScreen();
       case 1:
         return Center(child: Text('Subscriptions Screen Will Appear Here'));
       case 2:

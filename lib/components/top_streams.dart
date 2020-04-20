@@ -1,51 +1,57 @@
 import 'package:academe/constant.dart';
-import '../screens/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+
 class TopStreams extends StatefulWidget {
-  const TopStreams({Key key, this.callBack}) : super(key: key);
+  const TopStreams({Key key, this.callBack, this.url}) : super(key: key);
 
   final Function callBack;
+  final String url;
   @override
   _TopStreamsState createState() => _TopStreamsState();
 }
 
 class _TopStreamsState extends State<TopStreams>
     with TickerProviderStateMixin {
-  Map <dynamic,dynamic> popularStreams;
+  Map <dynamic,dynamic> topStreams;
   @override
   void initState() {
     super.initState();
-    getTopStreams();
+//    getTopStreams();
+    print('---------inside url-----------');
+  print(widget.url);
   }
 
-  Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 200));
-    return true;
-  }
+//  Future<bool> getData() async {
+//    await Future<dynamic>.delayed(const Duration(seconds: 3));
+//    return true;
+//  }
 
-  Future<bool> getTopStreams() async {
-    var url = 'http://159.65.154.185:89/api/popularStreams';
-    var response = await http.get(url);
+  Future<dynamic> getStreams() async {
+//    var url = 'http://159.65.154.185:89/api/topstreams';
+    var response = await http.get(widget.url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
-      popularStreams = jsonResponse['data'];
-//      print();
-      print('Number of Courses about http: $popularStreams.');
+      topStreams = jsonResponse['data'];
+      print('Top Streams: $topStreams.');
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
+    return topStreams;
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: FutureBuilder<bool>(
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+      child: FutureBuilder<dynamic>(
+        future: getStreams(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          print('--------------test--------------');
+          print(snapshot.data);
+          print(snapshot.hasError);
           if (!snapshot.hasData) {
             return const SizedBox();
           } else {
@@ -54,16 +60,15 @@ class _TopStreamsState extends State<TopStreams>
               padding: const EdgeInsets.all(8),
               physics: NeverScrollableScrollPhysics(),
               children: List<Widget>.generate(
-                Category.popularCourseList.length,
+                snapshot.data['streams'].length,
                 (int index) {
-                  final int count = Category.popularCourseList.length;
                   return Container(
                     height: 300,
-                    child: CategoryView(
+                    child: StreamView(
                       callback: () {
                         widget.callBack();
                       },
-                      category: Category.popularCourseList[index],
+                      stream: snapshot.data['streams'][index],
                     ),
                   );
                 },
@@ -81,15 +86,15 @@ class _TopStreamsState extends State<TopStreams>
   }
 }
 
-class CategoryView extends StatelessWidget {
-  const CategoryView(
+class StreamView extends StatelessWidget {
+  const StreamView(
       {Key key,
-      this.category,
+      this.stream,
       this.callback})
       : super(key: key);
 
   final VoidCallback callback;
-  final Category category;
+  final stream;
 
   @override
   Widget build(BuildContext context) {
@@ -109,11 +114,8 @@ class CategoryView extends StatelessWidget {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-//                                color: HexColor('#F8FAFB'),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(16.0)),
-                        // border: new Border.all(
-                        //     color: AcademeAppTheme.notWhite),
                       ),
                       child: Column(
                         children: <Widget>[
@@ -127,7 +129,7 @@ class CategoryView extends StatelessWidget {
                                     child: Row(
                                       children: <Widget>[
                                         Text(
-                                          category.title,
+                                          stream['name'],
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -143,7 +145,7 @@ class CategoryView extends StatelessWidget {
                                     child: Row(
                                       children: <Widget>[
                                         Text(
-                                          category.lessonCount.toString() +
+                                          stream['total_courses'].toString() +
                                               ' Courses',
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
@@ -185,7 +187,9 @@ class CategoryView extends StatelessWidget {
                     borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                     child: AspectRatio(
                         aspectRatio: 1.28,
-                        child: Image.asset(category.imagePath)),
+                        child:
+                        Image.network('http://159.65.154.185:89/storage/Hindi-Literature.jpeg')
+                    ),
                   ),
                 ),
               ),

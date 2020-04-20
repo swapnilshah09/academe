@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'package:academe/components/slider.dart';
 
-
 class HomeSubScreen extends StatefulWidget {
   @override
   _HomeSubScreenState createState() => _HomeSubScreenState();
@@ -137,6 +136,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
               callBack: () {
                 moveTo();
               },
+              url: 'http://159.65.154.185:89/api/topstreams',
             ),
           )
         ],
