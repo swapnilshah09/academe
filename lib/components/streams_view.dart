@@ -38,7 +38,7 @@ class _StreamsViewState extends State<StreamsView>
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       topStreams = jsonResponse['data'];
-      print('Top Streams: $topStreams.');
+     // print('Top Streams: $topStreams.');
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
@@ -61,8 +61,8 @@ class _StreamsViewState extends State<StreamsView>
       child: FutureBuilder<dynamic>(
         future: getStreams(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print('--------------test--------------');
-          print(snapshot.data);
+         // print('--------------test--------------');
+          //print(snapshot.data);
           print(snapshot.hasError);
           if (!snapshot.hasData) {
             return const SizedBox();

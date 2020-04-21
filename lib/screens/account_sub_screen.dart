@@ -1,9 +1,10 @@
 import 'package:academe/constant.dart';
+import 'package:academe/services/email_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/utils/text_field_validators.dart';
 import 'package:academe/components/buttons.dart';
-
-
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:academe/components/dialogs.dart';
 
 class AccountSubScreen extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class AccountSubScreen extends StatefulWidget {
 }
 
 class _AccountSubScreenState extends State<AccountSubScreen> {
+  bool _loading = false;
   bool isAuthenticated = false;
   bool _accountExists = false;
   bool _accountCheckDone = false;
@@ -19,15 +21,15 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _registrationFormKey = GlobalKey<FormState>();
   final TextEditingController _emailFormEmailFieldController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _registrationFormEmailFieldController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _loginFormEmailFieldController =
-  TextEditingController();
+      TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _choosePasswordController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   var courseData = <Map>[
     {
@@ -73,60 +75,68 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 
   Widget emailAuthScreen(BuildContext context) {
     return Scaffold(
-      appBar: null,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Welcome to',
-                style: TextStyle(
-                    color: AcademeAppTheme.primaryColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              Image.asset(
-                'assets/images/academe_logo.png',
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                child: Text(
-                  'Enter your email',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: ModalProgressHUD(
+        inAsyncCall: _loading,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: ListView(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Welcome to',
+                      style: TextStyle(
+                          color: AcademeAppTheme.primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Image.asset(
+                      'assets/images/academe_logo.png',
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                      child: Text(
+                        'Enter your email',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      child: Text(
+                        'It will let you save your course progress and view your subscriptions.',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                    Visibility(
+                      visible: !_accountCheckDone,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                        child: emailForm(),
+                      ),
+                    ),
+                    Visibility(
+                      visible: _accountCheckDone && _accountExists,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                        child: loginForm(),
+                      ),
+                    ),
+                    Visibility(
+                      visible: _accountCheckDone && !_accountExists,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                        child: registrationForm(),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Text(
-                  'It will let you save your course progress and view your subscriptions.',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-                ),
-              ),
-              Visibility(
-                visible: !_accountCheckDone,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: emailForm(),
-                ),
-              ),
-              Visibility(
-                visible: _accountCheckDone && _accountExists,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: loginForm(),
-                ),
-              ),
-              Visibility(
-                visible: _accountCheckDone && !_accountExists,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: registrationForm(),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -149,23 +159,25 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 30.0, 0, 0),
-            child: Buttons.primary('Continue using Email', () async {
-              if (_emailFormEmailFieldController.text.trim() ==
-                  'registered@academe.app') {
-                setState(() {
-                  _accountExists = true;
-                  _accountCheckDone = true;
-                  _loginFormEmailFieldController.text =
-                      _emailFormEmailFieldController.text;
-                });
-              } else {
-                setState(() {
-                  _accountExists = false;
-                  _accountCheckDone = true;
-                  _registrationFormEmailFieldController.text =
-                      _emailFormEmailFieldController.text;
-                });
-              }
+            child: Buttons.primary(
+                text: 'Continue using Email',
+                onTap: () async {
+                  if (_emailFormEmailFieldController.text.trim() ==
+                      'registered@academe.app') {
+                    setState(() {
+                      _accountExists = true;
+                      _accountCheckDone = true;
+                      _loginFormEmailFieldController.text =
+                          _emailFormEmailFieldController.text;
+                    });
+                  } else {
+                    setState(() {
+                      _accountExists = false;
+                      _accountCheckDone = true;
+                      _registrationFormEmailFieldController.text =
+                          _emailFormEmailFieldController.text;
+                    });
+                  }
 //                _emailFormEmailFieldController.text =
 //                    _emailFormEmailFieldController.text.trim();
 //                if (_emailFormKey.currentState.validate()) {
@@ -290,7 +302,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 //                      _loading = false;
 //                    });
 //                }
-            }),
+                }),
           )
         ],
       ),
@@ -324,11 +336,35 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Buttons.primary('Sign In using Email', () async {
-              setState(() {
-                print('Authenticated!');
-                isAuthenticated = true;
-              });
+            child: Buttons.primary(
+                text: 'Sign In using Email',
+                onTap: () async {
+//                  setState(() {
+//                    print('Authenticated!');
+//                    isAuthenticated = true;
+//                  });
+                  setState(() {
+                    _loading = true;
+                  });
+                  Map<String, Object> result =
+                      await EmailAuthService.signInWithEmailAndPassword(
+                    _loginFormEmailFieldController.text.trim(),
+                    _passwordController.text.trim(),
+                  );
+
+                  if (result.containsKey('error')) {
+                    Dialogs()
+                        .showErrorDialog(context, 'Oops!', result['error']);
+                  }
+
+                  setState(() {
+                    _loading = false;
+                    //user = FirebaseAuth.instance.currentUser();
+                    //commented this since future builder is taking the user to main screen - Udit
+//                    accountCheckDone = true;
+//                    accountExists = true;
+                  });
+
 //              Navigator.pushReplacement(
 //                context,
 //                MaterialPageRoute(
@@ -354,7 +390,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 ////                    accountExists = true;
 //                  });
 //                }
-            }),
+                }),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -419,38 +455,41 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
             child: Buttons.primary(
-              'Sign Up using Email',
-              () async {
-                setState(() {
-                  isAuthenticated = true;
-                });
+              text: 'Sign Up using Email',
+              onTap: () async {
+//                setState(() {
+//                  isAuthenticated = true;
+//                });
 //                Navigator.pushReplacement(
 //                  context,
 //                  MaterialPageRoute(
 //                      builder: (context) => AuthenticatedAccountSubScreen()),
 //                );
-//                if (_registrationFormKey.currentState.validate()) {
-//                  _registrationFormKey.currentState.save();
-//                  setState(() {
-//                    _loading = true;
-//                  });
-//                  Map<String, Object> result =
-//                  await _emailAuthService.registerUser(
-//                      _registrationFormEmailFieldController.text.trim(),
-//                      _choosePasswordController.text.trim(),
-//                      _fullNameController.text.trim());
-//                  if (result.containsKey('error')) {
-//                    showCustomDialog('Oops!', result['error']);
-//                  }
-//
-//                  setState(() {
-//                    _loading = false;
-//                    user = FirebaseAuth.instance.currentUser();
-//                    //commented this since future builder is taking the user to main screen - Udit
-////                    accountCheckDone = true;
-////                    accountExists = true;
-//                  });
+                if (_registrationFormKey.currentState.validate()) {
+                  _registrationFormKey.currentState.save();
+                  setState(() {
+                    _loading = true;
+                  });
+                  Map<String, Object> result =
+                      await EmailAuthService.registerUser(
+                          _registrationFormEmailFieldController.text.trim(),
+                          _choosePasswordController.text.trim(),
+                          _fullNameController.text.trim());
+
+                  if (result.containsKey('error')) {
+                    Dialogs()
+                        .showErrorDialog(context, 'Oops!', result['error']);
+                  }
+
+                  setState(() {
+                    _loading = false;
+                    //user = FirebaseAuth.instance.currentUser();
+                    //commented this since future builder is taking the user to main screen - Udit
+//                    accountCheckDone = true;
+//                    accountExists = true;
+                  });
 //                }
+                }
               },
             ),
           ),
@@ -492,7 +531,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 //        title: Text('Your account'),
 //      ),
       body: SafeArea(
-        child: Column(
+        child: ListView(
           children: <Widget>[
             Container(
               height: 100,
