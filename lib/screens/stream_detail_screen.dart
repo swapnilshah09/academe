@@ -1,12 +1,22 @@
+import 'package:academe/screens/course_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class StreamDetailScreen extends StatefulWidget {
+
+  final Map streamId;
+  StreamDetailScreen({
+    @required this.streamId,
+  });
   @override
   _StreamDetailScreenState createState() => _StreamDetailScreenState();
 }
 
 class _StreamDetailScreenState extends State<StreamDetailScreen> {
+  Map <dynamic,dynamic> streamData;
+
   var courseData = <Map> [
     {
       'imagePath': 'assets/design_course/interFace3.png',
@@ -45,34 +55,31 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
   @override
   void initState() {
     super.initState();
+//    streamData = getStreamData();
+//    print('INIT: $streamData.');
+  }
+
+  getStreamData() async {
+    var url = 'http://159.65.154.185:89/api/streamdetails/'+widget.streamId['id'].toString();
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      streamData = jsonResponse['data'];
+      print('Stream data: $streamData.');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+    return streamData;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UGC-NET'),
+        title: Text(widget.streamId['name']),
       ),
       body: ListView(
         children: <Widget>[
-//              Expanded(
-//                child: Padding(
-//                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
-//                  child: SearchBar(
-//                    hintText: "Search hint text",
-//                    hintStyle: TextStyle(
-//                      color: Colors.grey[100],
-//                    ),
-//                    textStyle: TextStyle(
-//                      color: Colors.black,
-//                      fontWeight: FontWeight.bold,
-//                    ),
-//                    mainAxisSpacing: 10,
-//                    crossAxisSpacing: 10,
-//                  ),
-//                ),
-//              ),
-
           Container(
             child: Image.asset(
                 'assets/images/StreamImage1.png',
@@ -87,7 +94,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                   Row(
                     children: <Widget>[
                       Text(
-                        'About UGC-NET',
+                        'About '+widget.streamId['name'],
                         style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
                       ),
                     ],
@@ -95,7 +102,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'The UGC-NET is one of the top streams chosen by Indian students to extend their careers. Academe has gathered the best courses for you to successfully crack the UGC-NET exam. Start learning!',
+                      widget.streamId['description'],
                       style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
 
                     ),
@@ -117,7 +124,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            '22 Courses for UGC-NET',
+                            widget.streamId['total_courses'].toString()+' Courses for '+ widget.streamId['name'],
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
@@ -125,16 +132,28 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                       ),
                     ),
                   ),
-                  ListView.builder(
-//                    physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: courseData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return courseList(courseData[index]);
-                      }
+                  FutureBuilder(
+                    future: getStreamData(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      print('-------data-----------');
+                      print(snapshot.data);
 
-                  )
+                      if (!snapshot.hasData) {
+                        return const SizedBox();
+                      } else {
+                        return ListView.builder(
+//                    physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data['courses']['data'].length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return courseList(snapshot.data['courses']['data'][index]);
+                            }
+
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -146,12 +165,22 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
 
   Widget courseList(Map data) {
     return ListTile(
+      onTap: (){
+        Navigator.push<dynamic>(
+          context,
+          MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) => CourseDetailScreen(
+              courseDetails: data,
+            ),
+          ),
+        );
+      },
       isThreeLine: true,
       contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       leading: ClipRRect(
           borderRadius: BorderRadius.circular(16.0),
-          child: Image.asset(
-            data['imagePath'],
+          child: Image.network(
+            data['courses_image'],
             width: 80.0,
             height: 80.0,
             fit: BoxFit.contain,
@@ -160,7 +189,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
       title: Row(
         children: <Widget>[
           Text(
-            data['title'],
+            data['name'].trim(),
             style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16
@@ -168,7 +197,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
           ),
           Spacer(),
           Text(
-            data['duration'],
+            data['course_duration'],
             style: TextStyle(
                 color: AcademeAppTheme.lightText,
                 fontSize: 12
@@ -181,7 +210,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
           Row(
             children: <Widget>[
               Text(
-                data['subtitle'],
+                data['total_sessions'].toString()+' Sessions',
                 style: TextStyle(
                     color: AcademeAppTheme.lightText,
                     fontSize: 12

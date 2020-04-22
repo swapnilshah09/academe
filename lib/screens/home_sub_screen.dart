@@ -58,6 +58,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
           callBack: (popularCourses) {
             moveToCourseDetailScreen(popularCourses);
           },
+          url: 'http://159.65.154.185:89/api/popularcourses'
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 15, right: 16),
@@ -85,8 +86,8 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
           ),
         ),
         StreamsView(
-          callBack: () {
-            moveToStreamDetailScreen();
+          callBack: (streamData) {
+            moveToStreamDetailScreen(streamData);
           },
           url: 'http://159.65.154.185:89/api/topstreams',
         ),
@@ -99,17 +100,19 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
       context,
       MaterialPageRoute<dynamic>(
         builder: (BuildContext context) => CourseDetailScreen(
-          popularCourses: popularCourses,
+          courseDetails: popularCourses,
         ),
       ),
     );
   }
 
-  void moveToStreamDetailScreen() {
+  void moveToStreamDetailScreen(Map<dynamic, dynamic> streamData) {
     Navigator.push<dynamic>(
       context,
       MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) => StreamDetailScreen(),
+        builder: (BuildContext context) => StreamDetailScreen(
+          streamId: streamData,
+        ),
       ),
     );
   }

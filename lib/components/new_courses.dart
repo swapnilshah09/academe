@@ -3,11 +3,13 @@ import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
 
 class NewCourses extends StatefulWidget {
-  const NewCourses({Key key, this.callBack}) : super(key: key);
+  const NewCourses({Key key, this.callBack, this.url}) : super(key: key);
 
   final Function callBack;
+  final String url;
   @override
   _NewCoursesState createState() => _NewCoursesState();
+
 }
 
 class _NewCoursesState extends State<NewCourses>
@@ -18,25 +20,18 @@ class _NewCoursesState extends State<NewCourses>
   @override
   void initState() {
     super.initState();
-    getPopularCourses();
   }
 
-  Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(seconds: 1));
-    return true;
-  }
-
-  Future<bool> getPopularCourses() async {
-    var url = 'http://159.65.154.185:89/api/popularcourses';
+  Future getCourses() async {
+    var url = widget.url;
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       popularCourses = jsonResponse['data'];
-//      print();
-      print('Number of Courses about http: $popularCourses.');
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
+    return popularCourses;
   }
 
   @override
@@ -44,22 +39,22 @@ class _NewCoursesState extends State<NewCourses>
     return Container(
       height: 134,
       width: double.infinity,
-      child: FutureBuilder<bool>(
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+      child: FutureBuilder(
+        future: getCourses(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return const SizedBox();
           } else {
             return ListView.builder(
               padding: const EdgeInsets.only(
                   top: 0, bottom: 0, right: 16, left: 16),
-              itemCount: popularCourses['courses'].length,
+              itemCount: snapshot.data['courses'].length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {
                 return CategoryView(
-                  category: popularCourses['courses'][index],
+                  category: snapshot.data['courses'][index],
                   callback: () {
-                    widget.callBack(popularCourses['courses'][index]);
+                    widget.callBack(snapshot.data['courses'][index]);
                   },
                 );
               },

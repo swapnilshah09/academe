@@ -2,12 +2,14 @@ import 'package:academe/screens/purchase_course_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'package:video_player/video_player.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class CourseDetailScreen extends StatefulWidget {
-  Map<dynamic, dynamic> popularCourses;
+  Map<dynamic, dynamic> courseDetails;
 
   CourseDetailScreen({
-    @required this.popularCourses,
+    @required this.courseDetails,
   });
   @override
   _CourseDetailScreenState createState() => _CourseDetailScreenState();
@@ -15,46 +17,49 @@ class CourseDetailScreen extends StatefulWidget {
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
   VideoPlayerController _controller;
-  var courseData = <Map>[
-    {
-      'imagePath': 'assets/design_course/interFace3.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    },
-    {
-      'imagePath': 'assets/design_course/interFace4.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    },
-    {
-      'imagePath': 'assets/design_course/interFace4.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    },
-    {
-      'imagePath': 'assets/design_course/interFace3.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    }
-  ];
+  Map <dynamic,dynamic> courseData;
+//  var courseData = <Map>[
+//    {
+//      'imagePath': 'assets/design_course/interFace3.png',
+//      'title': 'User interface Design',
+//      'subtitle': '23 sessions',
+//      'duration': '2h 20m',
+//      'money': 399,
+//      'purchaseDate': '13/04/2020',
+//    },
+//    {
+//      'imagePath': 'assets/design_course/interFace4.png',
+//      'title': 'User interface Design',
+//      'subtitle': '23 sessions',
+//      'duration': '2h 20m',
+//      'money': 399,
+//      'purchaseDate': '13/04/2020',
+//    },
+//    {
+//      'imagePath': 'assets/design_course/interFace4.png',
+//      'title': 'User interface Design',
+//      'subtitle': '23 sessions',
+//      'duration': '2h 20m',
+//      'money': 399,
+//      'purchaseDate': '13/04/2020',
+//    },
+//    {
+//      'imagePath': 'assets/design_course/interFace3.png',
+//      'title': 'User interface Design',
+//      'subtitle': '23 sessions',
+//      'duration': '2h 20m',
+//      'money': 399,
+//      'purchaseDate': '13/04/2020',
+//    }
+//  ];
 
   @override
   void initState() {
     super.initState();
+    print('------course details-----');
+    print(widget.courseDetails);
     _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+      widget.courseDetails['intro_video'],
 //      closedCaptionFile: _loadCaptions(),
     );
 
@@ -63,6 +68,19 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     });
     _controller.setLooping(true);
     _controller.initialize();
+  }
+
+  getCourseData() async {
+    var url = 'http://159.65.154.185:89/api/coursedetails/'+widget.courseDetails['id'].toString();
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      courseData = jsonResponse['data'];
+      print('Stream data: $courseData.');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+    return courseData;
   }
 
   @override
@@ -75,7 +93,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Course Detail'),
+        title: Text(widget.courseDetails['name']),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -91,23 +109,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       ),
       body: ListView(
         children: <Widget>[
-//              Expanded(
-//                child: Padding(
-//                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
-//                  child: SearchBar(
-//                    hintText: "Search hint text",
-//                    hintStyle: TextStyle(
-//                      color: Colors.grey[100],
-//                    ),
-//                    textStyle: TextStyle(
-//                      color: Colors.black,
-//                      fontWeight: FontWeight.bold,
-//                    ),
-//                    mainAxisSpacing: 10,
-//                    crossAxisSpacing: 10,
-//                  ),
-//                ),
-//              ),
           Column(
             children: <Widget>[
               Container(padding: const EdgeInsets.only(top: 20.0)),
@@ -176,7 +177,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       Row(
                         children: <Widget>[
                           Text(
-                            '₹ 299',
+                            '₹ '+widget.courseDetails['price'].toString(),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -226,7 +227,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'The Political Science course is an important part of the UGC-NET. This course will take your through 25 sessions that cover Politics, Elections, Parties, and Election Commission of India.',
+                      widget.courseDetails['description'],
                       style: TextStyle(
                           fontSize: 12, color: AcademeAppTheme.lightText),
                     ),
@@ -238,42 +239,53 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
             child: Container(
-              child: Card(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'All Sessions',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            Spacer(),
-                            Text(
-                              '23 Sessions',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: AcademeAppTheme.lightText),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
-                        ),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'All Sessions',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                          Spacer(),
+                          Text(
+                            widget.courseDetails['total_sessions'].toString()+' Sessions',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: AcademeAppTheme.lightText),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
                       ),
                     ),
-                    ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: courseData.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return courseList(courseData[index]);
-                        })
-                  ],
-                ),
+                  ),
+                  FutureBuilder(
+                    future: getCourseData(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      print('-------data-----------');
+                      print(snapshot.data);
+
+                      if (!snapshot.hasData) {
+                        return const SizedBox();
+                      } else {
+                        return ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: snapshot.data['sessions']['data'].length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return courseList(snapshot.data['sessions']['data'][index]);
+                            });
+                      }
+                    },
+                  ),
+
+                ],
               ),
             ),
           ),
@@ -288,8 +300,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       leading: ClipRRect(
           borderRadius: BorderRadius.circular(16.0),
-          child: Image.asset(
-            data['imagePath'],
+          child: Image.network(
+            data['image'],
             width: 80.0,
             height: 80.0,
             fit: BoxFit.contain,
@@ -297,12 +309,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       title: Row(
         children: <Widget>[
           Text(
-            data['title'],
+            data['name'],
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
           ),
           Spacer(),
           Text(
-            data['duration'],
+            data['course_duration'],
             style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
           )
         ],
@@ -311,10 +323,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Text(
-                data['subtitle'],
-                style:
-                    TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
+              Flexible(
+                child: Text(
+                  data['description'],
+                  style:
+                      TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
+                ),
               ),
             ],
           ),
@@ -323,16 +337,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             child: Row(
               children: <Widget>[
                 Text(
-                  data['money'].toString(),
-                  style:
-                      TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
+                  'Start Now >',
+                  style: TextStyle(
+                      color: AcademeAppTheme.primaryColor,
+                      fontSize: 12
+                  ),
                 ),
-                Spacer(),
-                Text(
-                  'Purchase on ' + data['purchaseDate'],
-                  style:
-                      TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
-                )
               ],
             ),
           )
