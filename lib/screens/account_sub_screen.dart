@@ -13,7 +13,7 @@ class AccountSubScreen extends StatefulWidget {
 
 class _AccountSubScreenState extends State<AccountSubScreen> {
   bool _loading = false;
-  bool isAuthenticated = false;
+  bool _isAuthenticated = false;
   bool _accountExists = false;
   bool _accountCheckDone = false;
   bool _obscureText = true;
@@ -68,7 +68,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return isAuthenticated
+    return _isAuthenticated
         ? userProfileScreen(context)
         : emailAuthScreen(context);
   }
@@ -162,146 +162,33 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
             child: Buttons.primary(
                 text: 'Continue using Email',
                 onTap: () async {
-                  if (_emailFormEmailFieldController.text.trim() ==
-                      'registered@academe.app') {
-                    setState(() {
-                      _accountExists = true;
-                      _accountCheckDone = true;
-                      _loginFormEmailFieldController.text =
-                          _emailFormEmailFieldController.text;
-                    });
-                  } else {
-                    setState(() {
-                      _accountExists = false;
-                      _accountCheckDone = true;
-                      _registrationFormEmailFieldController.text =
-                          _emailFormEmailFieldController.text;
-                    });
+                  if (_emailFormKey.currentState.validate()) {
+                    _emailFormKey.currentState.save();
+                    Map<String, Object> result =
+                        await EmailAuthService.doesAccountExist(
+                            _emailFormEmailFieldController.text.trim());
+
+                    if (result.containsKey('error')) {
+                      Dialogs()
+                          .showErrorDialog(context, 'Oops!', result['error']);
+                    }
+                    print("exists?" + result["exists"].toString());
+                    if (result["exists"] == true) {
+                      setState(() {
+                        _accountExists = true;
+                        _accountCheckDone = true;
+                        _loginFormEmailFieldController.text =
+                            _emailFormEmailFieldController.text;
+                      });
+                    } else if (result["exists"] == false) {
+                      setState(() {
+                        _accountExists = false;
+                        _accountCheckDone = true;
+                        _registrationFormEmailFieldController.text =
+                            _emailFormEmailFieldController.text;
+                      });
+                    }
                   }
-//                _emailFormEmailFieldController.text =
-//                    _emailFormEmailFieldController.text.trim();
-//                if (_emailFormKey.currentState.validate()) {
-//                  _emailFormKey.currentState.save();
-//                  print('Form validated');
-//                  setState(() {
-//                    _loading = true;
-//                  });
-//                  String provider;
-//                  Map<String, Object> providerFindResult =
-//                  await AuthHelperService().getAccountSignInMethod(
-//                      _emailFormEmailFieldController.text);
-//                  if (providerFindResult.containsKey('error')) {
-//                    showCustomDialog(
-//                        'Oops!',
-//                        'Error occured while finding provider: ' +
-//                            providerFindResult['error']);
-//                  } else
-//                    provider = providerFindResult['method'];
-//
-//                  switch (provider) {
-//                    case 'EMAIL':
-//                      {
-//                        setState(() {
-//                          _accountExists = true;
-//                          _accountCheckDone = true;
-//                          _loginFormEmailFieldController.text =
-//                              _emailFormEmailFieldController.text;
-//                        });
-//                        break;
-//                      }
-//
-//                    case 'DOESNOT_EXIST':
-//                      {
-//                        setState(() {
-//                          _accountExists = false;
-//                          _accountCheckDone = true;
-//                          _registrationFormEmailFieldController.text =
-//                              _emailFormEmailFieldController.text;
-//                        });
-//                        break;
-//                      }
-//                    case 'GOOGLE':
-//                      {
-//                        showDialog<void>(
-//                          context: context,
-//                          barrierDismissible: false, // user must tap button!
-//                          builder: (BuildContext context) {
-//                            return AlertDialog(
-//                              title: Text('Oops!'),
-//                              content: SingleChildScrollView(
-//                                child: ListBody(
-//                                  children: <Widget>[
-//                                    Text(
-//                                        'You logged in with Google last time.'),
-//                                    Text(
-//                                        'Please use the same method to continue.'),
-//                                  ],
-//                                ),
-//                              ),
-//                              actions: <Widget>[
-//                                FlatButton(
-//                                  child: Text('SET NEW PASSWORD'),
-//                                  onPressed: () {
-//                                    handleForgotPassword(true);
-//                                  },
-//                                ),
-//                                FlatButton(
-//                                  child: Text('GOT IT'),
-//                                  onPressed: () {
-//                                    Navigator.of(context).pop();
-//                                    Navigator.pushNamed(context, AuthScreen.id);
-//                                  },
-//                                ),
-//                              ],
-//                            );
-//                          },
-//                        );
-//                        break;
-//                      }
-//                    case 'FACEBOOK':
-//                      {
-//                        showDialog<void>(
-//                          context: context,
-//                          barrierDismissible: false, // user must tap button!
-//                          builder: (BuildContext context) {
-//                            return AlertDialog(
-//                              title: Text('Oops!'),
-//                              content: SingleChildScrollView(
-//                                child: ListBody(
-//                                  children: <Widget>[
-//                                    Text(
-//                                        'You logged in with Facebook last time.'),
-//                                    Text(
-//                                        'Please use the same method to continue.'),
-//                                  ],
-//                                ),
-//                              ),
-//                              actions: <Widget>[
-//                                FlatButton(
-//                                  child: Text('SET NEW PASSWORD'),
-//                                  onPressed: () {
-//                                    handleForgotPassword(true);
-//                                  },
-//                                ),
-//                                FlatButton(
-//                                  child: Text('GOT IT'),
-//                                  onPressed: () async {
-//                                    Navigator.of(context).pop();
-//                                    Navigator.pushNamed(context, AuthScreen.id);
-//                                  },
-//                                ),
-//                              ],
-//                            );
-//                          },
-//                        );
-//                        break;
-//                      }
-//                  }
-//                  if (mounted)
-//                    setState(() {
-//                      _loading = false;
-//                    });
-//                }
                 }),
           )
         ],
@@ -339,10 +226,6 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
             child: Buttons.primary(
                 text: 'Sign In using Email',
                 onTap: () async {
-//                  setState(() {
-//                    print('Authenticated!');
-//                    isAuthenticated = true;
-//                  });
                   setState(() {
                     _loading = true;
                   });
@@ -351,45 +234,23 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                     _loginFormEmailFieldController.text.trim(),
                     _passwordController.text.trim(),
                   );
-
                   if (result.containsKey('error')) {
                     Dialogs()
                         .showErrorDialog(context, 'Oops!', result['error']);
+                    setState(() {
+                      _loading = false;
+                    });
+                    return;
                   }
-
-                  setState(() {
-                    _loading = false;
-                    //user = FirebaseAuth.instance.currentUser();
-                    //commented this since future builder is taking the user to main screen - Udit
-//                    accountCheckDone = true;
-//                    accountExists = true;
-                  });
-
-//              Navigator.pushReplacement(
-//                context,
-//                MaterialPageRoute(
-//                    builder: (context) => AuthenticatedAccountSubScreen()),
-//              );
-//                if (_loginFormKey.currentState.validate()) {
-//                  _loginFormKey.currentState.save();
-//                  setState(() {
-//                    _loading = true;
-//                  });
-//                  Map<String, Object> result =
-//                  await _emailAuthService.signInWithEmailAndPassword(
-//                      _loginFormEmailFieldController.text.trim(),
-//                      _passwordController.text.trim());
-//                  if (result.containsKey('error')) {
-//                    showCustomDialog('Oops!', result['error']);
-//                  }
-//                  setState(() {
-//                    _loading = false;
-//                    user = FirebaseAuth.instance.currentUser();
-//                    //commented this since future builder is taking the user to main screen - Udit
-////                    accountCheckDone = true;
-////                    accountExists = true;
-//                  });
-//                }
+                  if (result.containsKey('data')) {
+                    setState(() {
+                      print(result['data'].toString());
+                      _loading = false;
+                      _accountCheckDone = true;
+                      _accountExists = true;
+                      _isAuthenticated = true;
+                    });
+                  }
                 }),
           ),
           Padding(
@@ -402,7 +263,6 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                 _accountCheckDone = true;
                 _registrationFormEmailFieldController.text =
                     _emailFormEmailFieldController.text;
-//              handleForgotPassword(false);
               },
             ),
           ),
@@ -457,38 +317,48 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
             child: Buttons.primary(
               text: 'Sign Up using Email',
               onTap: () async {
-//                setState(() {
-//                  isAuthenticated = true;
-//                });
-//                Navigator.pushReplacement(
-//                  context,
-//                  MaterialPageRoute(
-//                      builder: (context) => AuthenticatedAccountSubScreen()),
-//                );
                 if (_registrationFormKey.currentState.validate()) {
                   _registrationFormKey.currentState.save();
                   setState(() {
                     _loading = true;
                   });
-                  Map<String, Object> result =
+                  Map<String, Object> signUpResult =
                       await EmailAuthService.registerUser(
                           _registrationFormEmailFieldController.text.trim(),
                           _choosePasswordController.text.trim(),
                           _fullNameController.text.trim());
 
-                  if (result.containsKey('error')) {
-                    Dialogs()
-                        .showErrorDialog(context, 'Oops!', result['error']);
+                  if (signUpResult.containsKey('error')) {
+                    Dialogs().showErrorDialog(
+                        context, 'Oops!', signUpResult['error']);
+                    setState(() {
+                      _loading = false;
+                    });
+                    return;
                   }
-
-                  setState(() {
-                    _loading = false;
-                    //user = FirebaseAuth.instance.currentUser();
-                    //commented this since future builder is taking the user to main screen - Udit
-//                    accountCheckDone = true;
-//                    accountExists = true;
-                  });
-//                }
+                  //Sign in the registered user
+                  Map<String, Object> signInResult =
+                      await EmailAuthService.signInWithEmailAndPassword(
+                    _registrationFormEmailFieldController.text.trim(),
+                    _choosePasswordController.text.trim(),
+                  );
+                  if (signInResult.containsKey('error')) {
+                    Dialogs().showErrorDialog(
+                        context, 'Oops!', signInResult['error']);
+                    setState(() {
+                      _loading = false;
+                    });
+                    return;
+                  }
+                  if (signInResult.containsKey('data')) {
+                    setState(() {
+                      print(signInResult['data'].toString());
+                      _loading = false;
+                      _accountCheckDone = true;
+                      _accountExists = true;
+                      _isAuthenticated = true;
+                    });
+                  }
                 }
               },
             ),
@@ -527,9 +397,6 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 
   Widget userProfileScreen(BuildContext context) {
     return Scaffold(
-//      appBar: AppBar(
-//        title: Text('Your account'),
-//      ),
       body: SafeArea(
         child: ListView(
           children: <Widget>[
