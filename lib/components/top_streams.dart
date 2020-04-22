@@ -19,23 +19,13 @@ class _TopStreamsState extends State<TopStreams>
   @override
   void initState() {
     super.initState();
-//    getTopStreams();
-    print('---------inside url-----------');
-  print(widget.url);
   }
 
-//  Future<bool> getData() async {
-//    await Future<dynamic>.delayed(const Duration(seconds: 3));
-//    return true;
-//  }
-
   Future<dynamic> getStreams() async {
-//    var url = 'http://159.65.154.185:89/api/topstreams';
     var response = await http.get(widget.url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       topStreams = jsonResponse['data'];
-      print('Top Streams: $topStreams.');
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
@@ -49,9 +39,6 @@ class _TopStreamsState extends State<TopStreams>
       child: FutureBuilder<dynamic>(
         future: getStreams(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print('--------------test--------------');
-          print(snapshot.data);
-          print(snapshot.hasError);
           if (!snapshot.hasData) {
             return const SizedBox();
           } else {
@@ -66,7 +53,7 @@ class _TopStreamsState extends State<TopStreams>
                     height: 300,
                     child: StreamView(
                       callback: () {
-                        widget.callBack();
+                        widget.callBack(snapshot.data['streams'][index]);
                       },
                       stream: snapshot.data['streams'][index],
                     ),
@@ -188,7 +175,7 @@ class StreamView extends StatelessWidget {
                     child: AspectRatio(
                         aspectRatio: 1.28,
                         child:
-                        Image.network('http://159.65.154.185:89/storage/Hindi-Literature.jpeg')
+                        Image.network(stream['image'])
                     ),
                   ),
                 ),
