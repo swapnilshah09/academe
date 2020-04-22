@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'dart:math';
 
 class EmailAuthService {
   static Future<Map<String, Object>> registerUser(
@@ -21,7 +22,8 @@ class EmailAuthService {
       if (responseMap["error"] == true) {
         throw Exception(responseMap["cause"].toString());
       }
-      result['user_id'] = responseMap["user_id"];
+      result['data'] = responseMap["data"];
+      return result;
     } catch (e) {
       result['error'] =
           'Error occured while registering your account: ' + e.toString();
@@ -34,10 +36,7 @@ class EmailAuthService {
     Map<String, Object> result = new Map();
     try {
       String requestURL = "http://159.65.154.185:89/api/login";
-      Map requestData = {
-        "email": email,
-        "password": password
-      };
+      Map requestData = {"email": email, "password": password};
       var body = convert.jsonEncode(requestData);
       var response = await http.post(requestURL,
           headers: {"Content-Type": "application/json"}, body: body);
@@ -46,11 +45,48 @@ class EmailAuthService {
       if (responseMap["error"] == true) {
         throw Exception(responseMap["cause"].toString());
       }
-      result['user_id'] = responseMap["user_id"];
+      result['data'] = responseMap["data"];
+      return result;
+    } catch (e) {
+      result['error'] = 'Error occured while logging in: ' + e.toString();
+      return result;
+    }
+  }
+
+  ///This is a temporary workaround method, needs improvement
+  static Future<Map<String, Object>> doesAccountExist(String email) async {
+    Map<String, Object> result = new Map();
+    try {
+      String requestURL = "http://159.65.154.185:89/api/login";
+      Map requestData = {
+        "email": email,
+        "password": "test_pass" + Random().nextInt(9999).toString()
+      };
+      var body = convert.jsonEncode(requestData);
+      var response = await http.post(requestURL,
+          headers: {"Content-Type": "application/json"}, body: body);
+      Map<String, dynamic> responseMap = convert.jsonDecode(response.body);
+      print('Response: ' + responseMap.toString());
+      if (responseMap["error"] == true) {
+        if (responseMap["cause"].toString() ==
+            "The selected email is invalid.") {
+          responseMap["exists"] = false;
+        } else if (responseMap["cause"].toString() ==
+            "{error: Unauthorized access}") {
+          responseMap["exists"] = true;
+        } else {
+          throw Exception(
+              'Unable to check whehter the account exits or not. Please contact support');
+        }
+      } else {
+        throw Exception(
+            'Unable to check whehter the account exits or not. Please contact support');
+      }
+      result['exists'] = responseMap["exists"];
       return result;
     } catch (e) {
       result['error'] =
-          'Error occured while logging in: ' + e.toString();
+          'Error occured while checking the account: ' + e.toString();
       return result;
     }
   }
