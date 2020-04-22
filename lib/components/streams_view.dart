@@ -78,7 +78,7 @@ class _StreamsViewState extends State<StreamsView>
                     height: 300,
                     child: StreamView(
                       callback: () {
-                        widget.callBack();
+                        widget.callBack(snapshot.data['streams'][index]);
                       },
                       stream: snapshot.data['streams'][index],
                     ),
@@ -203,7 +203,7 @@ class StreamView extends StatelessWidget {
                     child: AspectRatio(
                         aspectRatio: 1.28,
                         child:
-                        Image.network('http://159.65.154.185:89/storage/Hindi-Literature.jpeg')
+                        Image.network(stream['image'])
                     ),
                   ),
                 ),
