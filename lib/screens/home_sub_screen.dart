@@ -1,11 +1,12 @@
 import 'package:academe/components/new_courses.dart';
+import 'package:academe/screens/all_streams_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/screens/course_detail_screen.dart';
 import 'package:academe/screens/stream_detail_screen.dart';
 import 'package:academe/constant.dart';
 import 'package:academe/components/slider.dart';
 import 'package:academe/components/buttons.dart';
-import 'package:academe/components/top_streams.dart';
+import 'package:academe/components/streams_view.dart';
 
 class HomeSubScreen extends StatefulWidget {
   @override
@@ -57,7 +58,6 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
           callBack: (popularCourses) {
             moveToCourseDetailScreen(popularCourses);
           },
-          url: 'http://159.65.154.185:89/api/popularcourses',
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 15, right: 16),
@@ -74,13 +74,19 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
               ),
               Buttons.miniPrimaryButton('View All', () {
                 //Navigate to all streams
+                Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => AllStreams(),
+                  ),
+                );
               })
             ],
           ),
         ),
-        TopStreams(
-          callBack: (streamId) {
-            moveToStreamDetailScreen(streamId);
+        StreamsView(
+          callBack: () {
+            moveToStreamDetailScreen();
           },
           url: 'http://159.65.154.185:89/api/topstreams',
         ),
@@ -99,13 +105,11 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
     );
   }
 
-  void moveToStreamDetailScreen(Map id) {
+  void moveToStreamDetailScreen() {
     Navigator.push<dynamic>(
       context,
       MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) => StreamDetailScreen(
-          streamId: id,
-        ),
+        builder: (BuildContext context) => StreamDetailScreen(),
       ),
     );
   }

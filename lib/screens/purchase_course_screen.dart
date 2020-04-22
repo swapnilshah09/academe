@@ -299,7 +299,7 @@ class CoursePurchasedDialog extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Buttons.primary('Start Course', () {}),
+            child: Buttons.primary(text:'Start Course', onTap:() {}),
           )
         ],
       ),

@@ -1,35 +1,57 @@
 import 'package:academe/constant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:academe/screens/stream_detail_screen.dart';
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 
 
-class TopStreams extends StatefulWidget {
-  const TopStreams({Key key, this.callBack, this.url}) : super(key: key);
+class StreamsView extends StatefulWidget {
+  const StreamsView({Key key, this.callBack, this.url}) : super(key: key);
 
   final Function callBack;
   final String url;
   @override
-  _TopStreamsState createState() => _TopStreamsState();
+  _StreamsViewState createState() => _StreamsViewState();
 }
 
-class _TopStreamsState extends State<TopStreams>
+class _StreamsViewState extends State<StreamsView>
     with TickerProviderStateMixin {
   Map <dynamic,dynamic> topStreams;
   @override
   void initState() {
     super.initState();
+//    getTopStreams();
+    print('---------inside url-----------');
+  print(widget.url);
   }
 
+//  Future<bool> getData() async {
+//    await Future<dynamic>.delayed(const Duration(seconds: 3));
+//    return true;
+//  }
+
   Future<dynamic> getStreams() async {
+//    var url = 'http://159.65.154.185:89/api/topstreams';
     var response = await http.get(widget.url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       topStreams = jsonResponse['data'];
+     // print('Top Streams: $topStreams.');
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
     return topStreams;
+  }
+
+  void moveToStreamDetailScreen() {
+    Navigator.push<dynamic>(
+      context,
+      MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) => StreamDetailScreen(),
+      ),
+    );
   }
 
   @override
@@ -39,6 +61,9 @@ class _TopStreamsState extends State<TopStreams>
       child: FutureBuilder<dynamic>(
         future: getStreams(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+         // print('--------------test--------------');
+          //print(snapshot.data);
+          print(snapshot.hasError);
           if (!snapshot.hasData) {
             return const SizedBox();
           } else {
@@ -53,7 +78,7 @@ class _TopStreamsState extends State<TopStreams>
                     height: 300,
                     child: StreamView(
                       callback: () {
-                        widget.callBack(snapshot.data['streams'][index]);
+                        widget.callBack();
                       },
                       stream: snapshot.data['streams'][index],
                     ),
@@ -115,12 +140,15 @@ class StreamView extends StatelessWidget {
                                         top: 8, left: 20, right: 16),
                                     child: Row(
                                       children: <Widget>[
-                                        Text(
-                                          stream['name'],
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                                        Flexible(
+                                          child: TextOneLine(
+                                            stream['name'],
+                                            overflow: TextOverflow.fade,
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -175,7 +203,7 @@ class StreamView extends StatelessWidget {
                     child: AspectRatio(
                         aspectRatio: 1.28,
                         child:
-                        Image.network(stream['image'])
+                        Image.network('http://159.65.154.185:89/storage/Hindi-Literature.jpeg')
                     ),
                   ),
                 ),

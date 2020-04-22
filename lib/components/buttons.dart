@@ -3,7 +3,7 @@ import 'package:academe/constant.dart';
 class Buttons {
   ///Full width primary button, takes button [text] and
   ///button [onTap]
-  static Widget primary(String text, Function onTap) {
+  static Widget primary({@required String text, @required Function onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -37,7 +37,7 @@ class Buttons {
         ),
         height: 43,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(11,8,8,9),
+          padding: const EdgeInsets.fromLTRB(11,8,11,9),
           child: Center(
             child: Text(
               text,
