@@ -175,14 +175,19 @@ Widget courseListTile(
         )),
     title: Row(
       children: <Widget>[
-        Text(
-          title,
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+        Expanded(
+          child: Text(
+            title,
+            overflow: TextOverflow.fade,
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+          ),
         ),
-        Spacer(),
-        Text(
-          duration,
-          style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 14),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            duration,
+            style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 14),
+          ),
         )
       ],
     ),
@@ -267,22 +272,25 @@ class CoursePurchasedDialog extends StatelessWidget {
                 ),
               ),
               Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Purchase Successful',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'You can find this course any time under “Subscriptions” tab of the Academe App.',
-                      style: TextStyle(color: AcademeAppTheme.lightText),
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Purchase Successful',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        'You can find this course any time under “Subscriptions” tab of the Academe App.',
+                        style: TextStyle(color: AcademeAppTheme.lightText),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -299,7 +307,7 @@ class CoursePurchasedDialog extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Buttons.primary(text:'Start Course', onTap:() {}),
+            child: Buttons.primary(text: 'Start Course', onTap: () {}),
           )
         ],
       ),

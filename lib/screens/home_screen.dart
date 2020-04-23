@@ -1,5 +1,6 @@
 import 'package:academe/screens/account_sub_screen.dart';
 import 'package:academe/screens/home_sub_screen.dart';
+import 'package:academe/screens/more_sub_screen.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -14,7 +15,7 @@ class _MyHomePageState extends State<MyHomePage> {
     null,
     AppBar(title: Text('Subscriptions')),
     null,
-    AppBar(title: Text('Support'),)
+    AppBar(title: Text('More Info'),)
   ];
 
   @override
@@ -31,16 +32,16 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.format_list_bulleted),
-            title: Text('Subscription'),
+            icon: Icon(Icons.subscriptions),
+            title: Text('Subscriptions'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            title: Text('Profile'),
+            title: Text('Account'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            title: Text('Support'),
+            icon: Icon(Icons.more_horiz),
+            title: Text('More'),
           ),
         ],
         onTap: _onItemTap,
@@ -66,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         return AccountSubScreen();
       case 3:
-        return Center(child: Text('Support Screen Will Appear Here'));
+        return MoreSubScreen();
     }
 
     return SizedBox();

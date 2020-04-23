@@ -1,4 +1,3 @@
-import 'package:academe/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -179,33 +178,18 @@ class StreamView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 48,
-                  ),
+//                  const SizedBox(
+//                    height: 50,
+//                  ),
                 ],
               ),
             ),
             Container(
               child: Padding(
-                padding: const EdgeInsets.only(top: 24, right: 16, left: 16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: AcademeAppTheme.grey.withOpacity(0.2),
-                          offset: const Offset(0.0, 0.0),
-                          blurRadius: 6.0),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-                    child: AspectRatio(
-                        aspectRatio: 1.28,
-                        child:
-                        Image.network(stream['image'])
-                    ),
-                  ),
+                padding: const EdgeInsets.only(top: 0, right: 0, left: 0),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                  child: Image.network(stream['image']),
                 ),
               ),
             ),
