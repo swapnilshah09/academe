@@ -129,6 +129,7 @@ class StreamView extends StatelessWidget {
                             const BorderRadius.all(Radius.circular(16.0)),
                       ),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Expanded(
                             child: Container(
@@ -136,7 +137,7 @@ class StreamView extends StatelessWidget {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 8, left: 20, right: 16),
+                                        top: 8, left: 26, right: 16),
                                     child: Row(
                                       children: <Widget>[
                                         Flexible(
@@ -155,7 +156,7 @@ class StreamView extends StatelessWidget {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 4, left: 20, right: 16, bottom: 4),
+                                        top: 4, left: 26, right: 16, bottom: 4),
                                     child: Row(
                                       children: <Widget>[
                                         Text(
@@ -168,6 +169,20 @@ class StreamView extends StatelessWidget {
                                           ),
                                         ),
                                       ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top:0.0),
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                        child: Image.network(stream['image'],
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -184,15 +199,20 @@ class StreamView extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 0, right: 0, left: 0),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                  child: Image.network(stream['image']),
-                ),
-              ),
-            ),
+//            Padding(
+//              padding: const EdgeInsets.all(20.0),
+//              child: Row(
+//                mainAxisAlignment: MainAxisAlignment.start,
+//                children: <Widget>[
+//                  Container(
+//                    child: ClipRRect(
+//                      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+//                      child: Image.network(stream['image']),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//            ),
           ],
         ),
       ),
