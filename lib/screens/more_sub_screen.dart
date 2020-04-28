@@ -1,6 +1,10 @@
+import 'package:academe/services/authentication_service.dart';
+import 'package:academe/services/shared_pref_service.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'package:academe/components/buttons.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:academe/components/dialogs.dart';
 
 class MoreSubScreen extends StatefulWidget {
   @override
@@ -8,110 +12,170 @@ class MoreSubScreen extends StatefulWidget {
 }
 
 class _MoreSubScreenState extends State<MoreSubScreen> {
+  bool _loading = false;
+  Future<bool> _isAuthenticated;
+  @override
+  void initState() {
+    super.initState();
+    _isAuthenticated = AuthenticationService.isAuthenticated();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => AboutAcademeDialog(),
-            );
-          },
-          child: Container(
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+   return FutureBuilder<bool>(
+      future: _isAuthenticated, // a previously-obtained Future<String> or null
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData) {
+          print(snapshot.data.toString());
+          return ModalProgressHUD(
+            inAsyncCall: _loading,
+            child: ListView(
               children: <Widget>[
-                SizedBox(
-                  height: 35,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 22),
-                  child: Text(
-                    'About Academe',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AboutAcademeDialog(),
+                    );
+                  },
+                  child: Ink(
+                    color: Colors.white,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 35,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(18, 0, 18, 22),
+                          child: Text(
+                            'About Academe',
+                            style:
+                            TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+                          child: Divider(),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
-                  child: Divider(),
+                Visibility(
+                  visible: snapshot.data==true,
+                  child: InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => ContactUsDialog(),
+                      );
+                    },
+                    child: Ink(
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 22,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(18, 0, 18, 22),
+                            child: Text(
+                              'Contact Us',
+                              style:
+                              TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+                            child: Divider(),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: snapshot.data==true,
+                  child: InkWell(
+                    onTap: () async {
+                      Dialogs().showConfirmationDialog(
+                          context: context,
+                          confirmationMessage: "Are you sure you want to log out?",
+                          cancelButtonText: 'CANCEL',
+                          actionButtonText: 'LOG OUT',
+                          actionButtonOnPress: () async {
+                            Navigator.of(context).pop();
+                            setState(() {
+                              _loading = true;
+                            });
+                            print('Logging out..');
+                            Map result = await SharedPrefService.clear();
+                            if (result.containsKey('error')) {
+                              setState(() {
+                                _loading = false;
+                              });
+                              Dialogs()
+                                  .showErrorDialog(context, 'Oops!', result['error']);
+                            }
+                            setState(() {
+                              _isAuthenticated = AuthenticationService.isAuthenticated();
+                              _loading = false;
+                            });
+                          });
+                    },
+                    child: Ink(
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 22,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(18, 0, 18, 28),
+                            child: Text(
+                              'Log Out',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 34,
+                ),
+                Container(
+                  color: Colors.white,
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(18, 30, 0, 30),
+                        child: Image.asset(
+                          'assets/images/academe_logo.png',
+                          height: 30,
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => ContactUsDialog(),
-            );
-          },
-          child: Container(
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 22,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 22),
-                  child: Text(
-                    'Contact Us',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
-                  child: Divider(),
-                )
-              ],
-            ),
-          ),
-        ),
-        Container(
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                height: 22,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 0, 18, 28),
-                child: Text(
-                  'Log Out',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 34,
-        ),
-        Container(
-          color: Colors.white,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 30, 0, 30),
-                child: Image.asset(
-                  'assets/images/academe_logo.png',
-                  height: 30,
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error while loading data, please retry'));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
+
   }
 }
 

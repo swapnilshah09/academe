@@ -5,6 +5,7 @@ import 'package:academe/utils/text_field_validators.dart';
 import 'package:academe/components/buttons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:academe/components/dialogs.dart';
+import 'package:academe/services/shared_pref_service.dart';
 
 class AccountSubScreen extends StatefulWidget {
   @override
@@ -13,10 +14,11 @@ class AccountSubScreen extends StatefulWidget {
 
 class _AccountSubScreenState extends State<AccountSubScreen> {
   bool _loading = false;
-  bool _isAuthenticated = false;
   bool _accountExists = false;
   bool _accountCheckDone = false;
   bool _obscureText = true;
+  String _signedInUserName = "Academe User";
+  Future<Map> _screenData;
   final GlobalKey<FormState> _emailFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _registrationFormKey = GlobalKey<FormState>();
@@ -67,10 +69,70 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _screenData = getDataForScreen();
+  }
+
+  Future<Map> getDataForScreen() async {
+    Map _authTokenResultMap = new Map();
+    Map _userNameResultMap = new Map();
+    Map screenData = new Map();
+    try {
+      _authTokenResultMap =
+          await SharedPrefService.fetchFromSharedPref('authToken');
+      _userNameResultMap =
+          await SharedPrefService.fetchFromSharedPref('userName');
+
+      if (!_authTokenResultMap.containsKey('error') &&
+          !_userNameResultMap.containsKey('error')) {
+        screenData['authToken'] = _authTokenResultMap['authToken'];
+        screenData['userName'] = _userNameResultMap['userName'];
+      } else {
+        if (_authTokenResultMap.containsKey('error')) {
+          screenData['error'] += _authTokenResultMap['error'];
+        }
+        if (_userNameResultMap.containsKey('error')) {
+          screenData['error'] += _userNameResultMap['error'];
+        }
+      }
+    } catch (e) {
+      print(e);
+      screenData['error'] += e.toString();
+    }
+    return screenData;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return _isAuthenticated
-        ? userProfileScreen(context)
-        : emailAuthScreen(context);
+    return FutureBuilder<Map>(
+        future: _screenData,
+        builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+          if (snapshot.hasData) {
+            //prepare screen
+            if (snapshot.data.containsKey('authToken')) {
+              if (snapshot.data['authToken'] != null) {
+                if (snapshot.data.containsKey('userName') &&
+                    snapshot.data['userName'] != null) {
+                  if (snapshot.data['userName'].toString().isNotEmpty)
+                    _signedInUserName = snapshot.data['userName'].toString();
+                }
+                return userProfileScreen(context);
+              }
+              if (snapshot.data['authToken'] == null) {
+                return emailAuthScreen(context);
+              }
+            }
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text('Error while loading data, please retry'));
+          } else {
+            //show waiting state
+            return Center(child: CircularProgressIndicator());
+          }
+          //show full data with preparation done in hasData stage
+          return Center(child: CircularProgressIndicator());
+        });
   }
 
   Widget emailAuthScreen(BuildContext context) {
@@ -172,7 +234,6 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                       Dialogs()
                           .showErrorDialog(context, 'Oops!', result['error']);
                     }
-                    print("exists?" + result["exists"].toString());
                     if (result["exists"] == true) {
                       setState(() {
                         _accountExists = true;
@@ -226,31 +287,8 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
             child: Buttons.primary(
                 text: 'Sign In using Email',
                 onTap: () async {
-                  setState(() {
-                    _loading = true;
-                  });
-                  Map<String, Object> result =
-                      await EmailAuthService.signInWithEmailAndPassword(
-                    _loginFormEmailFieldController.text.trim(),
-                    _passwordController.text.trim(),
-                  );
-                  if (result.containsKey('error')) {
-                    Dialogs()
-                        .showErrorDialog(context, 'Oops!', result['error']);
-                    setState(() {
-                      _loading = false;
-                    });
-                    return;
-                  }
-                  if (result.containsKey('data')) {
-                    setState(() {
-                      print(result['data'].toString());
-                      _loading = false;
-                      _accountCheckDone = true;
-                      _accountExists = true;
-                      _isAuthenticated = true;
-                    });
-                  }
+                  signInUser(_loginFormEmailFieldController.text.trim(),
+                      _passwordController.text.trim());
                 }),
           ),
           Padding(
@@ -336,29 +374,8 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                     });
                     return;
                   }
-                  //Sign in the registered user
-                  Map<String, Object> signInResult =
-                      await EmailAuthService.signInWithEmailAndPassword(
-                    _registrationFormEmailFieldController.text.trim(),
-                    _choosePasswordController.text.trim(),
-                  );
-                  if (signInResult.containsKey('error')) {
-                    Dialogs().showErrorDialog(
-                        context, 'Oops!', signInResult['error']);
-                    setState(() {
-                      _loading = false;
-                    });
-                    return;
-                  }
-                  if (signInResult.containsKey('data')) {
-                    setState(() {
-                      print(signInResult['data'].toString());
-                      _loading = false;
-                      _accountCheckDone = true;
-                      _accountExists = true;
-                      _isAuthenticated = true;
-                    });
-                  }
+                  signInUser(_registrationFormEmailFieldController.text.trim(),
+                      _choosePasswordController.text.trim());
                 }
               },
             ),
@@ -421,7 +438,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                       Row(
                         children: <Widget>[
                           Text(
-                            'Swapnil Shah',
+                            _signedInUserName,
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
@@ -534,5 +551,72 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
         ],
       ),
     );
+  }
+
+  void signInUser(String email, String password) async {
+    setState(() {
+      _loading = true;
+    });
+
+    Map<String, Object> result =
+        await EmailAuthService.signInWithEmailAndPassword(
+      email,
+      password,
+    );
+    if (result.containsKey('error')) {
+      Dialogs().showErrorDialog(context, 'Oops!', result['error']);
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+    if (result.containsKey('data')) {
+      Map data = result['data'];
+
+      if (data.containsKey('token')) {
+        Map tokenResult = await SharedPrefService.storeInSharedPref(
+            'authToken', data['token']);
+
+        if (tokenResult.containsKey('error')) {
+          Dialogs().showErrorDialog(context, 'Oops!', tokenResult['error']);
+          setState(() {
+            _loading = false;
+          });
+          return;
+        }
+      }
+      if (data.containsKey('name')) {
+        Map nameTokenResult =
+            await SharedPrefService.storeInSharedPref('userName', data['name']);
+
+        if (nameTokenResult.containsKey('error')) {
+          Dialogs().showErrorDialog(context, 'Oops!', nameTokenResult['error']);
+          setState(() {
+            _loading = false;
+          });
+          return;
+        }
+      }
+      setState(() {
+        if (data.containsKey('name')) {
+          _signedInUserName = data['name'];
+        }
+        _loading = false;
+        _accountCheckDone = true;
+        _accountExists = true;
+        _screenData = getDataForScreen();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailFormEmailFieldController.dispose();
+    _registrationFormEmailFieldController.dispose();
+    _loginFormEmailFieldController.dispose();
+    _passwordController.dispose();
+    _choosePasswordController.dispose();
+    _fullNameController.dispose();
   }
 }
