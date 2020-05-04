@@ -444,10 +444,10 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                           ),
                           Spacer(),
                           Text(
-                            'Edit profile',
+                            'Edit Profile',
                             style: TextStyle(
                                 fontSize: 14,
-                                color: AcademeAppTheme.green,
+                                color: AcademeAppTheme.primaryColor,
                                 fontWeight: FontWeight.w700),
                           )
                         ],
