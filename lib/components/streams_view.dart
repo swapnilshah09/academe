@@ -21,15 +21,8 @@ class _StreamsViewState extends State<StreamsView>
   @override
   void initState() {
     super.initState();
-//    getTopStreams();
-    print('---------inside url-----------');
-  print(widget.url);
   }
 
-//  Future<bool> getData() async {
-//    await Future<dynamic>.delayed(const Duration(seconds: 3));
-//    return true;
-//  }
 
   Future<dynamic> getStreams() async {
 //    var url = 'http://159.65.154.185:89/api/topstreams';

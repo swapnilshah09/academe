@@ -16,7 +16,6 @@ class AuthenticationService {
       if (_authTokenResultMap.containsKey('authToken') &&
           _authTokenResultMap['authToken'] != null &&
           _authTokenResultMap['authToken'].toString().isNotEmpty) {
-        print('Authenticated');
         return true;
       }
     } catch (e) {
