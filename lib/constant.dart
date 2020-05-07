@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+const String kAPIDomain = "academe.stimulusco.com";
 class AcademeAppTheme {
   AcademeAppTheme._();
 

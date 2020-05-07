@@ -1,4 +1,5 @@
 import 'package:academe/constant.dart';
+import 'package:academe/screens/edit_profile_screen.dart';
 import 'package:academe/services/email_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/utils/text_field_validators.dart';
@@ -226,10 +227,15 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                 onTap: () async {
                   if (_emailFormKey.currentState.validate()) {
                     _emailFormKey.currentState.save();
+                    setState(() {
+                      _loading = true;
+                    });
                     Map<String, Object> result =
                         await EmailAuthService.doesAccountExist(
                             _emailFormEmailFieldController.text.trim());
-
+                    setState(() {
+                      _loading = false;
+                    });
                     if (result.containsKey('error')) {
                       Dialogs()
                           .showErrorDialog(context, 'Oops!', result['error']);
@@ -443,12 +449,23 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Spacer(),
-                          Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: AcademeAppTheme.primaryColor,
-                                fontWeight: FontWeight.w700),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push<dynamic>(
+                                context,
+                                MaterialPageRoute<dynamic>(
+                                  builder: (BuildContext context) =>
+                                      EditProfileScreen(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Edit Profile',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: AcademeAppTheme.primaryColor,
+                                  fontWeight: FontWeight.w700),
+                            ),
                           )
                         ],
                       )

@@ -5,6 +5,8 @@ import 'package:academe/constant.dart';
 import 'package:academe/components/buttons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:academe/components/dialogs.dart';
+import 'package:academe/components/fields.dart';
+import 'package:academe/utils/text_field_validators.dart';
 
 class MoreSubScreen extends StatefulWidget {
   @override
@@ -14,6 +16,7 @@ class MoreSubScreen extends StatefulWidget {
 class _MoreSubScreenState extends State<MoreSubScreen> {
   bool _loading = false;
   Future<bool> _isAuthenticated;
+
   @override
   void initState() {
     super.initState();
@@ -22,7 +25,7 @@ class _MoreSubScreenState extends State<MoreSubScreen> {
 
   @override
   Widget build(BuildContext context) {
-   return FutureBuilder<bool>(
+    return FutureBuilder<bool>(
       future: _isAuthenticated, // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.hasData) {
@@ -50,8 +53,8 @@ class _MoreSubScreenState extends State<MoreSubScreen> {
                           padding: const EdgeInsets.fromLTRB(18, 0, 18, 22),
                           child: Text(
                             'About Academe',
-                            style:
-                            TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Padding(
@@ -63,7 +66,7 @@ class _MoreSubScreenState extends State<MoreSubScreen> {
                   ),
                 ),
                 Visibility(
-                  visible: snapshot.data==true,
+                  visible: snapshot.data == true,
                   child: InkWell(
                     onTap: () {
                       showDialog(
@@ -83,8 +86,8 @@ class _MoreSubScreenState extends State<MoreSubScreen> {
                             padding: const EdgeInsets.fromLTRB(18, 0, 18, 22),
                             child: Text(
                               'Contact Us',
-                              style:
-                              TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                           ),
                           Padding(
@@ -97,12 +100,13 @@ class _MoreSubScreenState extends State<MoreSubScreen> {
                   ),
                 ),
                 Visibility(
-                  visible: snapshot.data==true,
+                  visible: snapshot.data == true,
                   child: InkWell(
                     onTap: () async {
                       Dialogs().showConfirmationDialog(
                           context: context,
-                          confirmationMessage: "Are you sure you want to log out?",
+                          confirmationMessage:
+                              "Are you sure you want to log out?",
                           cancelButtonText: 'CANCEL',
                           actionButtonText: 'LOG OUT',
                           actionButtonOnPress: () async {
@@ -116,11 +120,12 @@ class _MoreSubScreenState extends State<MoreSubScreen> {
                               setState(() {
                                 _loading = false;
                               });
-                              Dialogs()
-                                  .showErrorDialog(context, 'Oops!', result['error']);
+                              Dialogs().showErrorDialog(
+                                  context, 'Oops!', result['error']);
                             }
                             setState(() {
-                              _isAuthenticated = AuthenticationService.isAuthenticated();
+                              _isAuthenticated =
+                                  AuthenticationService.isAuthenticated();
                               _loading = false;
                             });
                           });
@@ -175,7 +180,6 @@ class _MoreSubScreenState extends State<MoreSubScreen> {
         }
       },
     );
-
   }
 }
 
@@ -275,14 +279,10 @@ class ContactUsDialog extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 0),
-                        child: TextField(
-                          //controller: _couponController,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              fillColor: Colors.grey[200],
-                              filled: true),
+                        child: Fields.borderedTextFormField(
+                          controller: null,
+                          textInputType: TextInputType.text,
+                          validator: TextFieldValidators.nameValidator,
                         ),
                       ),
                       Text(
@@ -293,16 +293,13 @@ class ContactUsDialog extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 0),
-                        child: TextField(
-                          //controller: _couponController,
+                        child: Fields.borderedTextFormField(
                           minLines: 4,
                           maxLines: 7,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              fillColor: Colors.grey[200],
-                              filled: true),
+                          //controller: _couponController,
+                          controller: null,
+                          textInputType: TextInputType.text,
+                          validator: TextFieldValidators.nameValidator,
                         ),
                       ),
                     ],
