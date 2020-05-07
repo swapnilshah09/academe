@@ -1,6 +1,7 @@
 import 'package:academe/screens/account_sub_screen.dart';
 import 'package:academe/screens/home_sub_screen.dart';
 import 'package:academe/screens/more_sub_screen.dart';
+import 'package:academe/screens/subscriptions_sub_screen.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -63,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return HomeSubScreen();
       case 1:
-        return Center(child: Text('Subscriptions Screen Will Appear Here'));
+        return SubscriptionsSubScreen();
       case 2:
         return AccountSubScreen();
       case 3:

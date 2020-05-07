@@ -1,8 +1,11 @@
+import 'package:academe/services/profile_service.dart';
 import 'package:academe/utils/text_field_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/components/buttons.dart';
 import 'package:academe/components/fields.dart';
 import 'package:academe/services/authentication_service.dart';
+import 'package:academe/components/dialogs.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EditProfileScreen extends StatefulWidget {
   @override
@@ -10,7 +13,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  GlobalKey<FormState> updateDetailsFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> updateDetailsFormKey = GlobalKey<FormState>();
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _emailFieldController = TextEditingController();
   Future<Map> _userData;
@@ -143,7 +146,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
 class ChangePasswordDialog extends StatelessWidget {
   ChangePasswordDialog();
-
+  final GlobalKey<FormState> _changePasswordFormKey = GlobalKey<FormState>();
+  final TextEditingController _currentPasswordFieldController =
+      TextEditingController();
+  final TextEditingController _newPasswordFieldController =
+      TextEditingController();
+  final TextEditingController _newPasswordConfirmFieldController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -153,76 +162,115 @@ class ChangePasswordDialog extends StatelessWidget {
   }
 
   dialogContent(BuildContext context) {
-    return Container(
-      decoration: new BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(13),
-      ),
-      child: Scrollbar(
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(33, 33, 33, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Current Password',
-                    style: TextStyle(fontWeight: FontWeight.normal),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                    child: Fields.borderedTextFormField(
-                      //controller: _couponController,
-                      controller: null,
-                      textInputType: TextInputType.text,
-                      validator: TextFieldValidators.passwordValidator,
+    bool _loading = false;
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Scrollbar(
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(33, 33, 33, 10),
+                  child: Form(
+                    key: _changePasswordFormKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Current Password',
+                          style: TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 0),
+                          child: Fields.borderedTextFormField(
+                            controller: _currentPasswordFieldController,
+                            textInputType: TextInputType.text,
+                            validator: TextFieldValidators.passwordValidator,
+                          ),
+                        ),
+                        Text(
+                          'New Password',
+                          style: TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 0),
+                          child: Fields.borderedTextFormField(
+                            controller: _newPasswordFieldController,
+                            textInputType: TextInputType.text,
+                            validator: TextFieldValidators.passwordValidator,
+                          ),
+                        ),
+                        Text(
+                          'Confirm New Password',
+                          style: TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 0),
+                          child: Fields.borderedTextFormField(
+                            controller: _newPasswordConfirmFieldController,
+                            textInputType: TextInputType.text,
+                            validator: TextFieldValidators.passwordValidator,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    'New Password',
-                    style: TextStyle(fontWeight: FontWeight.normal),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                    child: Fields.borderedTextFormField(
-                      //controller: _couponController,
-                      controller: null,
-                      textInputType: TextInputType.text,
-                      validator: TextFieldValidators.passwordValidator,
-                    ),
-                  ),
-                  Text(
-                    'Confirm New Password',
-                    style: TextStyle(fontWeight: FontWeight.normal),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                    child: Fields.borderedTextFormField(
-                      //controller: _couponController,
-                      controller: null,
-                      textInputType: TextInputType.text,
-                      validator: TextFieldValidators.passwordValidator,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(33, 0, 33, 33),
+                  child: _loading
+                      ? Center(child: CircularProgressIndicator())
+                      : Buttons.primary(
+                          text: 'Change Password',
+                          onTap: () async {
+                            setState(() {
+                              _loading = true;
+                            });
+                            if (_changePasswordFormKey.currentState
+                                .validate()) {
+                              _changePasswordFormKey.currentState.save();
+                              Map changePasswordResult =
+                                  await ProfileService.changePassword(
+                                      _currentPasswordFieldController.text
+                                          .trim(),
+                                      _newPasswordFieldController.text.trim(),
+                                      _newPasswordConfirmFieldController.text
+                                          .trim());
+                              if (changePasswordResult.containsKey('error')) {
+                                Dialogs().showErrorDialog(context, 'Oops!',
+                                    changePasswordResult['error']);
+                                setState(() {
+                                  _loading = false;
+                                });
+                                return;
+                              }
+                              setState(() {
+                                _loading = false;
+                              });
+                            }
+                            Fluttertoast.showToast(
+                                msg: "Password update successful",
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                            Navigator.of(context).pop();
+                          }),
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(33, 0, 33, 33),
-              child: Buttons.primary(
-                  text: 'Change Password',
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  }),
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

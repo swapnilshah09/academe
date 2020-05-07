@@ -52,7 +52,6 @@ class EmailAuthService {
     }
   }
 
-  ///This is a temporary workaround method, needs improvement
   static Future<Map<String, Object>> doesAccountExist(String email) async {
     Map<String, Object> result = new Map();
     try {
