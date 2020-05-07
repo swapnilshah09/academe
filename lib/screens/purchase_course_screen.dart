@@ -1,25 +1,17 @@
+import 'package:academe/screens/payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
-import 'package:academe/components/buttons.dart';
 
 class PurchaseCourseScreen extends StatefulWidget {
+  static String id = 'purchase_course_screen';
+  final Map<String, dynamic> selectedCourseData;
+  PurchaseCourseScreen({@required this.selectedCourseData});
   @override
   _PurchaseCourseScreenState createState() => _PurchaseCourseScreenState();
 }
 
 class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
-  var selectedCourseData = {
-    'imagePath': 'assets/design_course/interFace3.png',
-    'title': 'General Paper',
-    'subtitle': '23 sessions',
-    'duration': '2h 20m',
-    'stream': 'UGC-NET',
-    'price': 399,
-    'purchaseDate': '13/04/2020',
-    'sessionsCount': '23',
-    'courseSummary':
-        'The Political Science course is an important part of the UGC-NET. This course will take your through 25 sessions that cover Politics, Elections, Parties, and Election Commission of India.'
-  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,11 +28,11 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                   shrinkWrap: true,
                   children: <Widget>[
                     courseListTile(
-                      imagePath: selectedCourseData['imagePath'],
-                      title: selectedCourseData['title'],
-                      subtitle: selectedCourseData['subtitle'],
-                      duration: selectedCourseData['duration'],
-                      stream: selectedCourseData['stream'],
+                      imagePath: widget.selectedCourseData['courses_image'],
+                      title: widget.selectedCourseData['name'],
+                      subtitle: widget.selectedCourseData['total_sessions'].toString(),
+                      duration: widget.selectedCourseData['course_duration'],
+                      stream: widget.selectedCourseData['stream_name'],
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -50,13 +42,13 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                     ),
                     faq(
                         question: 'What is covered in the course?',
-                        answer: selectedCourseData['courseSummary']),
+                        answer: widget.selectedCourseData['description']),
                     faq(
                         question: 'What is number of sessions in the course?',
-                        answer: selectedCourseData['sessionsCount']),
+                        answer: widget.selectedCourseData['total_sessions'].toString()),
                     faq(
                         question: 'What is duration of the course?',
-                        answer: selectedCourseData['duration']),
+                        answer: widget.selectedCourseData['course_duration']),
                     faq(
                         question: 'What is validity of purchase?',
                         answer:
@@ -71,16 +63,14 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
             ),
           ),
           proceedToPayButton(onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => CoursePurchasedDialog(
-                  courseImagePath: selectedCourseData['imagePath'],
-                  courseTitle: selectedCourseData['title'],
-                  courseSubtitle: selectedCourseData['subtitle'],
-                  courseDuration: selectedCourseData['duration'],
-                  courseSessions: selectedCourseData['sessionsCount'],
-                  courseStream: selectedCourseData['stream'],
-                  coursePrice: selectedCourseData['price']),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                settings: RouteSettings(name: 'OrderProcessing'),
+                builder: (context) => PaymentScreen(
+                  orderData: widget.selectedCourseData,
+                ),
+              ),
             );
           }),
         ],
@@ -102,7 +92,7 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                '₹' + selectedCourseData['price'].toString(),
+                '₹' + widget.selectedCourseData['price'].toString(),
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -167,7 +157,7 @@ Widget courseListTile(
     isThreeLine: true,
     leading: ClipRRect(
         borderRadius: BorderRadius.circular(16.0),
-        child: Image.asset(
+        child: Image.network(
           imagePath,
           width: 80.0,
           height: 80.0,
@@ -196,7 +186,7 @@ Widget courseListTile(
         Row(
           children: <Widget>[
             Text(
-              subtitle,
+              subtitle+" sessions",
               style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 14),
             ),
           ],
@@ -227,90 +217,4 @@ Widget courseListTile(
   );
 }
 
-class CoursePurchasedDialog extends StatelessWidget {
-  final String courseImagePath,
-      courseTitle,
-      courseSubtitle,
-      courseDuration,
-      courseSessions,
-      courseStream;
-  final int coursePrice;
-  CoursePurchasedDialog(
-      {@required this.courseImagePath,
-      @required this.courseTitle,
-      @required this.courseSubtitle,
-      @required this.courseDuration,
-      @required this.courseSessions,
-      @required this.courseStream,
-      @required this.coursePrice});
 
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: dialogContent(context),
-    );
-  }
-
-  dialogContent(BuildContext context) {
-    return Container(
-      decoration: new BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(13),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 40, 20, 40),
-                child: Icon(
-                  Icons.check_circle,
-                  color: AcademeAppTheme.primaryColor,
-                  size: 50,
-                ),
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Purchase Successful',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        'You can find this course any time under “Subscriptions” tab of the Academe App.',
-                        style: TextStyle(color: AcademeAppTheme.lightText),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 40),
-            child: courseListTile(
-                imagePath: this.courseImagePath,
-                title: this.courseTitle,
-                subtitle: this.courseSubtitle,
-                duration: this.courseDuration,
-                stream: this.courseStream,
-                price: this.coursePrice),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Buttons.primary(text: 'Start Course', onTap: () {}),
-          )
-        ],
-      ),
-    );
-  }
-}

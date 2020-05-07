@@ -4,6 +4,7 @@ import 'package:academe/constant.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:chewie/chewie.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   Map<dynamic, dynamic> courseDetails;
@@ -17,57 +18,25 @@ class CourseDetailScreen extends StatefulWidget {
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
   VideoPlayerController _controller;
+  VideoPlayerController _videoPlayerController1;
+  VideoPlayerController _videoPlayerController2;
+  ChewieController _chewieController;
+  String videoUrl;
   Map <dynamic,dynamic> courseData;
-//  var courseData = <Map>[
-//    {
-//      'imagePath': 'assets/design_course/interFace3.png',
-//      'title': 'User interface Design',
-//      'subtitle': '23 sessions',
-//      'duration': '2h 20m',
-//      'money': 399,
-//      'purchaseDate': '13/04/2020',
-//    },
-//    {
-//      'imagePath': 'assets/design_course/interFace4.png',
-//      'title': 'User interface Design',
-//      'subtitle': '23 sessions',
-//      'duration': '2h 20m',
-//      'money': 399,
-//      'purchaseDate': '13/04/2020',
-//    },
-//    {
-//      'imagePath': 'assets/design_course/interFace4.png',
-//      'title': 'User interface Design',
-//      'subtitle': '23 sessions',
-//      'duration': '2h 20m',
-//      'money': 399,
-//      'purchaseDate': '13/04/2020',
-//    },
-//    {
-//      'imagePath': 'assets/design_course/interFace3.png',
-//      'title': 'User interface Design',
-//      'subtitle': '23 sessions',
-//      'duration': '2h 20m',
-//      'money': 399,
-//      'purchaseDate': '13/04/2020',
-//    }
-//  ];
 
   @override
   void initState() {
     super.initState();
     print('------course details-----');
     print(widget.courseDetails);
-    _controller = VideoPlayerController.network(
-      widget.courseDetails['intro_video'],
-//      closedCaptionFile: _loadCaptions(),
+    videoUrl = widget.courseDetails['intro_video'];
+    _videoPlayerController1 = VideoPlayerController.network(
+        videoUrl);
+    _chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController1,
+      aspectRatio: 3 / 2,
+      autoInitialize: true,
     );
-
-    _controller.addListener(() {
-      setState(() {});
-    });
-    _controller.setLooping(true);
-    _controller.initialize();
   }
 
   getCourseData() async {
@@ -85,7 +54,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _videoPlayerController1.dispose();
+    _videoPlayerController2.dispose();
+    _chewieController.dispose();
     super.dispose();
   }
 
@@ -95,21 +66,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       appBar: AppBar(
         title: Text(widget.courseDetails['name']),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _controller.value.isPlaying
-                ? _controller.pause()
-                : _controller.play();
-          });
-        },
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
-      ),
       body: ListView(
         children: <Widget>[
           Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Container(padding: const EdgeInsets.only(top: 20.0)),
               Padding(
@@ -124,19 +84,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: <Widget>[
-                      VideoPlayer(_controller),
-                      ClosedCaption(text: _controller.value.caption.text),
-                      _PlayPauseOverlay(controller: _controller),
-                      VideoProgressIndicator(_controller,
-                          allowScrubbing: false),
-                    ],
+              Flexible(
+                child: Center(
+                  child: Chewie(
+                    controller: _chewieController,
                   ),
                 ),
               ),
@@ -166,7 +117,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                   Navigator.push<dynamic>(
                     context,
                     MaterialPageRoute<dynamic>(
-                      builder: (BuildContext context) => PurchaseCourseScreen(),
+                      builder: (BuildContext context) => PurchaseCourseScreen(
+                        selectedCourseData: widget.courseDetails,
+                      ),
                     ),
                   );
                 },
@@ -365,7 +318,25 @@ class _PlayPauseOverlay extends StatelessWidget {
           duration: Duration(milliseconds: 50),
           reverseDuration: Duration(milliseconds: 200),
           child: controller.value.isPlaying
-              ? SizedBox.shrink()
+              ? Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  color: Colors.black12,
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.pause,
+                        color: Colors.white,
+                        size: 40.0,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
               : Container(
                   color: Colors.black26,
                   child: Center(
