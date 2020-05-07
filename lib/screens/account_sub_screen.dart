@@ -1,4 +1,5 @@
 import 'package:academe/constant.dart';
+import 'package:academe/screens/edit_profile_screen.dart';
 import 'package:academe/services/authentication_service.dart';
 import 'package:academe/services/email_auth_service.dart';
 import 'package:flutter/material.dart';
@@ -70,14 +71,12 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   ];
   Future<bool> _isAuthenticated;
 
-
   @override
   void initState() {
     super.initState();
     _screenData = getDataForScreen();
     _isAuthenticated = AuthenticationService.isAuthenticated();
   }
-
 
   Future<Map> getDataForScreen() async {
     Map _authTokenResultMap = new Map();
@@ -448,12 +447,23 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Spacer(),
-                          Text(
-                            'Edit profile',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: AcademeAppTheme.green,
-                                fontWeight: FontWeight.w700),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push<dynamic>(
+                                context,
+                                MaterialPageRoute<dynamic>(
+                                  builder: (BuildContext context) =>
+                                      EditProfileScreen(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Edit profile',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: AcademeAppTheme.primaryColor,
+                                  fontWeight: FontWeight.w700),
+                            ),
                           )
                         ],
                       )

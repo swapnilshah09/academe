@@ -1,7 +1,7 @@
 import 'package:academe/screens/account_sub_screen.dart';
 import 'package:academe/screens/home_sub_screen.dart';
 import 'package:academe/screens/more_sub_screen.dart';
-import 'package:academe/screens/subscription_screen.dart';
+import 'package:academe/screens/subscriptions_sub_screen.dart';
 import 'package:academe/services/authentication_service.dart';
 import 'package:flutter/material.dart';
 
@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return HomeSubScreen();
       case 1:
-        return SubscriptionScreen();
+        return SubscriptionsSubScreen();
       case 2:
         return AccountSubScreen();
       case 3:

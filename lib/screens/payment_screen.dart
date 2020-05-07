@@ -161,7 +161,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         currentTime.toString());
 
     Fluttertoast.showToast(
-        msg: "SUCCESS: " + response.paymentId, timeInSecForIos: 4);
+        msg: "SUCCESS: " + response.paymentId, toastLength: Toast.LENGTH_LONG);
     Map<String, dynamic> successData = {
       'orderStatus': 'placed',
       'paymentStatus': 'completed',
@@ -195,7 +195,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     if (response.code != 2) {
       Fluttertoast.showToast(
           msg: "ERROR: " + response.code.toString() + " - " + response.message,
-          timeInSecForIos: 4);
+          toastLength: Toast.LENGTH_LONG);
 
     }
     Map<String, dynamic> failureData = {
@@ -207,7 +207,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void _handleExternalWallet(ExternalWalletResponse response) {
     print(response.toString());
     Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: " + response.walletName, timeInSecForIos: 4);
+        msg: "EXTERNAL_WALLET: " + response.walletName, toastLength: Toast.LENGTH_LONG);
   }
 
   @override
