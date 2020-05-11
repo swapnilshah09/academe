@@ -55,11 +55,10 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
           ),
         ),
         NewCourses(
-          callBack: (popularCourses) {
-            moveToCourseDetailScreen(popularCourses);
-          },
-          url: 'http://159.65.154.185:89/api/popularcourses'
-        ),
+            callBack: (popularCourses) {
+              moveToCourseDetailScreen(popularCourses);
+            },
+            url: 'http://159.65.154.185:89/api/popularcourses'),
         Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 15, right: 16),
           child: Row(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'course_detail_screen.dart';
 import 'package:academe/services/subscriptions_service.dart';
+import 'package:academe/components/buttons.dart';
 
 class SubscriptionsSubScreen extends StatefulWidget {
   @override
@@ -76,13 +77,27 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
-                    child: Text(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+
+                  children: <Widget>[
+                    Text(
                       'Your subscriptions will appear here when you are logged in.',
                       style: TextStyle(
                         fontSize: 20,
                       ),
                       textAlign: TextAlign.center,
-                    )),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(28.0),
+                      child: Buttons.primary(text: 'Login', onTap: null),
+                    )
+                  ],
+                )),
               );
             }
             return Center(
