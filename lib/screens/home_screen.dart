@@ -13,14 +13,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedSubScreen = 0;
   Future<bool> _isAuthenticated;
-  List <AppBar> appbar = [
-  null,
-  AppBar(title: Text('Subscriptions')),
-  null,
-  AppBar(title: Text('More Info'),)
+  List<AppBar> appbar = [
+    null,
+    AppBar(title: Text('Subscriptions')),
+    null,
+    AppBar(
+      title: Text('More Info'),
+    )
   ];
   bool authenticated = false;
-
 
   @override
   void initState() {
@@ -28,22 +29,23 @@ class _MyHomePageState extends State<MyHomePage> {
     _isAuthenticated = AuthenticationService.isAuthenticated();
     print('-------change-------');
 //    print(value);
-    _isAuthenticated.then((value){
+    _isAuthenticated.then((value) {
       print('-------home-------');
       print(value);
       if (value == true) {
-        this.setState((){
+        this.setState(() {
           appbar = [
             null,
             AppBar(title: Text('Subscriptions')),
             AppBar(title: Text('Your Account')),
-            AppBar(title: Text('More Info'),)
+            AppBar(
+              title: Text('More Info'),
+            )
           ];
         });
       }
     });
   }
-
 
   @override
   void didUpdateWidget(MyHomePage oldWidget) {
@@ -52,31 +54,34 @@ class _MyHomePageState extends State<MyHomePage> {
     _isAuthenticated = AuthenticationService.isAuthenticated();
     print('-------change-------');
 //    print(value);
-    _isAuthenticated.then((value){
+    _isAuthenticated.then((value) {
       print('-------home-------');
       print(value);
       if (value == true) {
-        this.setState((){
+        this.setState(() {
           appbar = [
             null,
             AppBar(title: Text('Subscriptions')),
             AppBar(title: Text('Your Account')),
-            AppBar(title: Text('More Info'),)
+            AppBar(
+              title: Text('More Info'),
+            )
           ];
         });
       } else {
-        this.setState((){
+        this.setState(() {
           appbar = [
             null,
             AppBar(title: Text('Subscriptions')),
             null,
-            AppBar(title: Text('More Info'),)
+            AppBar(
+              title: Text('More Info'),
+            )
           ];
         });
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {

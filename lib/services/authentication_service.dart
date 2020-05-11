@@ -56,4 +56,27 @@ class AuthenticationService {
     }
     return result;
   }
+  static Future<Map> forgotPassword(String email) async {
+    Map<String, Object> result = new Map();
+    try {
+      var uri = Uri.https(kAPIDomain, '/api/forgotpassword');
+      Map requestData = {
+        "email": email,
+      };
+      var body = convert.jsonEncode(requestData);
+      var response = await http.post(uri,
+          headers: {"Content-Type": "application/json"}, body: body);
+      Map<String, dynamic> responseMap = convert.jsonDecode(response.body);
+
+      print('forgotpassword Response: ' + responseMap.toString());
+      if (responseMap["error"] == true) {
+        throw Exception(responseMap["cause"].toString());
+      }
+      result['data'] = responseMap["data"];
+      return result;
+    } catch (e) {
+      print('Error occured while sending new password: ' + e.toString());
+      return result;
+    }
+  }
 }

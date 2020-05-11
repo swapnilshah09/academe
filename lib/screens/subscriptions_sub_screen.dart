@@ -1,3 +1,4 @@
+import 'package:academe/services/authentication_service.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'course_detail_screen.dart';
@@ -10,47 +11,89 @@ class SubscriptionsSubScreen extends StatefulWidget {
 
 class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
   Future<Map> _subscriptionsData;
+  Future<bool> _isAuthenticated;
+  Map screenData;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _subscriptionsData,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        print(snapshot.data);
-        if (snapshot.hasData) {
-          if (snapshot.data['data'] == null) {
-            if (snapshot.data['error'] == true) {
-              return Center(
-                  child: Text('Error while loading data, please retry' +
-                      snapshot.data['error']['cause']));
-            }
-            return Center(
-                child: Text('Error while loading data, please retry'));
-          }
-          List subCourseDataFromAPI = snapshot.data['data']['courses'];
-          if (subCourseDataFromAPI.length == 0) {
-            return Center(
-                child: Text(
-                    'Oops! It seems you have not subscribed to any courses yet.'));
-          }
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Scrollbar(
-              child: ListView.builder(
+        future: _isAuthenticated,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data == true) {
+              return FutureBuilder(
+                future: _subscriptionsData,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  print(snapshot.data);
+                  if (snapshot.hasData) {
+                    if (snapshot.data['data'] == null) {
+                      if (snapshot.data['error'] == true) {
+                        return Center(
+                            child: Text(
+                                'Error while loading data, please retry' +
+                                    snapshot.data['error']['cause']));
+                      }
+                      return Center(
+                          child:
+                              Text('Error while loading data, please retry'));
+                    }
+                    List subCourseDataFromAPI =
+                        snapshot.data['data']['courses'];
+                    if (subCourseDataFromAPI.length == 0) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                            child: Text(
+                          'Oops! It seems you have not subscribed to any courses yet.',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.center,
+                        )),
+                      );
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Scrollbar(
+                        child: ListView.builder(
 //                physics: const NeverScrollableScrollPhysics(),
 //                shrinkWrap: true,
-                  itemCount: subCourseDataFromAPI.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return courseList(subCourseDataFromAPI[index]);
-                  }),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error while loading data, please retry'));
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+                            itemCount: subCourseDataFromAPI.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return courseList(subCourseDataFromAPI[index]);
+                            }),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                        child: Text('Error while loading data, please retry'));
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              );
+            } else if (snapshot.data == false) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Text(
+                      'Your subscriptions will appear here when you are logged in.',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    )),
+              );
+            }
+            return Center(
+                child: Text('Error occured while checking authentication'));
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text('Error while loading data, please retry'));
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
   }
 
   Widget courseList(Map data) {
@@ -86,7 +129,8 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
               Spacer(),
               Text(
                 data['course_duration'],
-                style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
+                style:
+                    TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
               )
             ],
           ),
@@ -96,8 +140,8 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
                 children: <Widget>[
                   Text(
                     data['total_sessions'].toString() + ' Sessions',
-                    style:
-                        TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
+                    style: TextStyle(
+                        color: AcademeAppTheme.lightText, fontSize: 12),
                   ),
                 ],
               ),
@@ -108,7 +152,9 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
                     Text(
                       'View Course',
                       style: TextStyle(
-                          color: AcademeAppTheme.primaryColor, fontSize: 12,fontWeight: FontWeight.bold),
+                          color: AcademeAppTheme.primaryColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -124,6 +170,7 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
   @override
   void initState() {
     super.initState();
+    _isAuthenticated = AuthenticationService.isAuthenticated();
     _subscriptionsData = SubscriptionsService.getSubscriptionsData();
   }
 }

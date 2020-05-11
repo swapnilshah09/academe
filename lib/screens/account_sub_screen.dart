@@ -69,13 +69,11 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
       'purchaseDate': '13/04/2020',
     }
   ];
-  Future<bool> _isAuthenticated;
 
   @override
   void initState() {
     super.initState();
     _screenData = getDataForScreen();
-    _isAuthenticated = AuthenticationService.isAuthenticated();
   }
 
   Future<Map> getDataForScreen() async {
@@ -230,10 +228,15 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                 onTap: () async {
                   if (_emailFormKey.currentState.validate()) {
                     _emailFormKey.currentState.save();
+                    setState(() {
+                      _loading = true;
+                    });
                     Map<String, Object> result =
                         await EmailAuthService.doesAccountExist(
                             _emailFormEmailFieldController.text.trim());
-
+                    setState(() {
+                      _loading = false;
+                    });
                     if (result.containsKey('error')) {
                       Dialogs()
                           .showErrorDialog(context, 'Oops!', result['error']);
@@ -301,17 +304,41 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
               child: Text('Don\'t have an account? Register',
                   style: TextStyle(color: AcademeAppTheme.primaryColor)),
               onPressed: () {
-                _accountExists = false;
-                _accountCheckDone = true;
-                _registrationFormEmailFieldController.text =
-                    _emailFormEmailFieldController.text;
+                setState(() {
+                  _accountExists = false;
+                  _accountCheckDone = true;
+                  _registrationFormEmailFieldController.text =
+                      _emailFormEmailFieldController.text;
+                });
               },
             ),
           ),
           FlatButton(
             child: Text('Forgot Password?',
                 style: TextStyle(color: AcademeAppTheme.primaryColor)),
-            onPressed: () {
+            onPressed: () async {
+              setState(() {
+                _loading = true;
+              });
+
+              Map result = await AuthenticationService.forgotPassword(
+                  _loginFormEmailFieldController.text.trim());
+              if (result.containsKey('error')) {
+                Dialogs().showErrorDialog(context, 'Oops!', result['error']);
+                setState(() {
+                  _loading = false;
+                });
+                return;
+              }
+              if (result.containsKey('data')) {
+                //String data = result['data'];
+                setState(() {
+                  _loading = false;
+                });
+                Dialogs().showInfoDialog(context, 'Password Updated',
+                    'Email with new password sent succesfully');
+              }
+
 //              handleForgotPassword(false);
             },
           ),
