@@ -100,6 +100,7 @@ class _HomeSubScreenState extends State<HomeSubScreen> {
       MaterialPageRoute<dynamic>(
         builder: (BuildContext context) => CourseDetailScreen(
           courseDetails: popularCourses,
+          isSubscribed: false,
         ),
       ),
     );

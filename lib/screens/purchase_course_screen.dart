@@ -1,6 +1,8 @@
 import 'package:academe/screens/payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
+import 'package:academe/services/shared_pref_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PurchaseCourseScreen extends StatefulWidget {
   static String id = 'purchase_course_screen';
@@ -62,16 +64,24 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
               ),
             ),
           ),
-          proceedToPayButton(onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                settings: RouteSettings(name: 'OrderProcessing'),
-                builder: (context) => PaymentScreen(
-                  orderData: widget.selectedCourseData,
+          proceedToPayButton(onTap: ()async {
+            Map _authTokenResult =
+                await SharedPrefService.fetchFromSharedPref('authToken');
+            if(_authTokenResult['authToken'] != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: RouteSettings(name: 'OrderProcessing'),
+                  builder: (context) => PaymentScreen(
+                    orderData: widget.selectedCourseData,
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              Fluttertoast.showToast(
+                  msg: "You need to login before making a payment.", toastLength: Toast.LENGTH_LONG);
+            }
+
           }),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:academe/screens/purchase_course_screen.dart';
+import 'package:academe/services/authentication_service.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -8,9 +10,11 @@ import 'package:chewie/chewie.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   Map<dynamic, dynamic> courseDetails;
+  bool isSubscribed;
 
   CourseDetailScreen({
     @required this.courseDetails,
+    @required this.isSubscribed
   });
   @override
   _CourseDetailScreenState createState() => _CourseDetailScreenState();
@@ -22,7 +26,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   ChewieController _chewieController;
   String videoUrl;
   Map <dynamic,dynamic> courseData;
-
+  Future<Map> userData;
+  bool courseSubscribed;
   @override
   void initState() {
     super.initState();
@@ -36,6 +41,20 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       aspectRatio: 3 / 2,
       autoInitialize: true,
     );
+    userData = AuthenticationService.getLoggedInUserDataFromAPI();
+    userData.then((subscriptionData){
+      print('--------------object------------');
+        var length = subscriptionData['data']['courses'].length;
+        for (var i=0; i <length; i++){
+          if(subscriptionData['data']['courses'][i]['id'] == widget.courseDetails['id']) {
+            this.setState((){
+              courseSubscribed = true;
+            });
+          } else {
+            continue;
+          }
+        }
+    });
   }
 
   getCourseData() async {
@@ -112,6 +131,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               ),
               child: InkWell(
                 onTap: () {
+                  this.setState((){
+                    _videoPlayerController1.pause();
+                    _chewieController.pause();
+                  });
                   Navigator.push<dynamic>(
                     context,
                     MaterialPageRoute<dynamic>(
@@ -247,6 +270,25 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
 
   Widget courseList(Map data) {
     return ListTile(
+      onTap: (){
+        if(courseSubscribed == true && courseSubscribed != null) {
+          this.setState((){
+            _videoPlayerController1.pause();
+            _chewieController.pause();
+            videoUrl = data['video_url'];
+            _videoPlayerController1 = VideoPlayerController.network(
+                videoUrl);
+            _chewieController = ChewieController(
+              videoPlayerController: _videoPlayerController1,
+              aspectRatio: 3 / 2,
+              autoInitialize: true,
+            );
+          });
+        } else {
+          Fluttertoast.showToast(
+              msg: "You need to purchase this course to view this session.", toastLength: Toast.LENGTH_LONG);
+        }
+      },
       isThreeLine: true,
       contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       leading: ClipRRect(
@@ -303,55 +345,3 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 }
 
-class _PlayPauseOverlay extends StatelessWidget {
-  const _PlayPauseOverlay({Key key, this.controller}) : super(key: key);
-
-  final VideoPlayerController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        AnimatedSwitcher(
-          duration: Duration(milliseconds: 50),
-          reverseDuration: Duration(milliseconds: 200),
-          child: controller.value.isPlaying
-              ? Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  color: Colors.black12,
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.pause,
-                        color: Colors.white,
-                        size: 40.0,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )
-              : Container(
-                  color: Colors.black26,
-                  child: Center(
-                    child: Icon(
-                      Icons.play_arrow,
-                      color: Colors.white,
-                      size: 100.0,
-                    ),
-                  ),
-                ),
-        ),
-        GestureDetector(
-          onTap: () {
-            controller.value.isPlaying ? controller.pause() : controller.play();
-          },
-        ),
-      ],
-    );
-  }
-}

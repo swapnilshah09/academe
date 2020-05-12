@@ -171,6 +171,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
           MaterialPageRoute<dynamic>(
             builder: (BuildContext context) => CourseDetailScreen(
               courseDetails: data,
+              isSubscribed: false,
             ),
           ),
         );

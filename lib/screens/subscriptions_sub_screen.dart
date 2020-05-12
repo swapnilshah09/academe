@@ -4,6 +4,7 @@ import 'package:academe/constant.dart';
 import 'course_detail_screen.dart';
 import 'package:academe/services/subscriptions_service.dart';
 import 'package:academe/components/buttons.dart';
+import 'package:academe/screens/home_screen.dart';
 
 class SubscriptionsSubScreen extends StatefulWidget {
   static String id = 'subscription_sub_screen';
@@ -95,7 +96,9 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(28.0),
-                      child: Buttons.primary(text: 'Login', onTap: null),
+                      child: Buttons.primary(text: 'Login', onTap: (){
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyHomePage(testScreenCount: 2)), (_) => false);
+                      }),
                     )
                   ],
                 )),
@@ -122,6 +125,7 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
               MaterialPageRoute<dynamic>(
                 builder: (BuildContext context) => CourseDetailScreen(
                   courseDetails: data,
+                  isSubscribed: true,
                 ),
               ),
             );
