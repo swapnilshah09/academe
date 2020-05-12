@@ -6,6 +6,7 @@ import 'package:academe/services/authentication_service.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
+  static String id = 'my_home_page';
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -20,17 +21,16 @@ class _MyHomePageState extends State<MyHomePage> {
   AppBar(title: Text('More Info'),)
   ];
   bool authenticated = false;
-
+  ScreenArguments args;
+  bool showSubScreen1 = false;
 
   @override
   void initState() {
     super.initState();
+
+
     _isAuthenticated = AuthenticationService.isAuthenticated();
-    print('-------change-------');
-//    print(value);
     _isAuthenticated.then((value){
-      print('-------home-------');
-      print(value);
       if (value == true) {
         this.setState((){
           appbar = [
@@ -43,43 +43,19 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
   }
-
-
-  @override
-  void didUpdateWidget(MyHomePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print('-------did update--------');
-    _isAuthenticated = AuthenticationService.isAuthenticated();
-    print('-------change-------');
-//    print(value);
-    _isAuthenticated.then((value){
-      print('-------home-------');
-      print(value);
-      if (value == true) {
-        this.setState((){
-          appbar = [
-            null,
-            AppBar(title: Text('Subscriptions')),
-            AppBar(title: Text('Your Account')),
-            AppBar(title: Text('More Info'),)
-          ];
-        });
-      } else {
-        this.setState((){
-          appbar = [
-            null,
-            AppBar(title: Text('Subscriptions')),
-            null,
-            AppBar(title: Text('More Info'),)
-          ];
-        });
-      }
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
+      args = ModalRoute.of(context).settings.arguments;
+      print('-------home-------');
+      print(args != null ? args.selectScreen : '');
+      print(ModalRoute.of(context).isActive);
+//      this.setState((){
+//        if (args != null && args.selectScreen != null) {
+//          _selectedSubScreen = args.selectScreen;
+//        }
+//      });
+
     return Scaffold(
       appBar: appbar != null ? appbar[_selectedSubScreen] : null,
       bottomNavigationBar: BottomNavigationBar(
@@ -132,4 +108,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return SizedBox();
   }
+}
+
+class ScreenArguments {
+  final int selectScreen;
+  final bool showSubScreen1;
+  ScreenArguments(this.selectScreen, this.showSubScreen1);
 }

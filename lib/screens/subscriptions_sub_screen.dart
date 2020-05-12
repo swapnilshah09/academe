@@ -4,6 +4,7 @@ import 'course_detail_screen.dart';
 import 'package:academe/services/subscriptions_service.dart';
 
 class SubscriptionsSubScreen extends StatefulWidget {
+  static String id = 'subscription_sub_screen';
   @override
   _SubscriptionsSubScreenState createState() => _SubscriptionsSubScreenState();
 }

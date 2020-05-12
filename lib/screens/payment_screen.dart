@@ -1,5 +1,6 @@
 import 'package:academe/components/buttons.dart';
 import 'package:academe/constant.dart';
+import 'package:academe/screens/home_screen.dart';
 import 'package:academe/screens/purchase_course_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -347,7 +348,7 @@ class CoursePurchasedDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Buttons.primary(text: 'Start Course', onTap: () {
-
+              Navigator.pushNamedAndRemoveUntil(context, MyHomePage.id, (_) => false, arguments: ScreenArguments(1, true) );
             }),
           )
         ],
@@ -355,3 +356,4 @@ class CoursePurchasedDialog extends StatelessWidget {
     );
   }
 }
+

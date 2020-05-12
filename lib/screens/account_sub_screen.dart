@@ -8,6 +8,8 @@ import 'package:academe/components/buttons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:academe/components/dialogs.dart';
 import 'package:academe/services/shared_pref_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class AccountSubScreen extends StatefulWidget {
   @override
@@ -70,6 +72,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
     }
   ];
   Future<bool> _isAuthenticated;
+  Future<Map> _userData;
 
   @override
   void initState() {
@@ -92,6 +95,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
           !_userNameResultMap.containsKey('error')) {
         screenData['authToken'] = _authTokenResultMap['authToken'];
         screenData['userName'] = _userNameResultMap['userName'];
+        _userData = AuthenticationService.getLoggedInUserDataFromAPI();
       } else {
         if (_authTokenResultMap.containsKey('error')) {
           screenData['error'] += _authTokenResultMap['error'];
@@ -110,33 +114,60 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map>(
-        future: _screenData,
-        builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
-          if (snapshot.hasData) {
-            //prepare screen
-            if (snapshot.data.containsKey('authToken')) {
-              if (snapshot.data['authToken'] != null) {
-                if (snapshot.data.containsKey('userName') &&
-                    snapshot.data['userName'] != null) {
-                  if (snapshot.data['userName'].toString().isNotEmpty)
-                    _signedInUserName = snapshot.data['userName'].toString();
-                }
-                return userProfileScreen(context);
+      future: _screenData,
+      builder: (context, AsyncSnapshot<Map> snapshot) {
+        if (snapshot.hasData) {
+          //prepare screen
+          if (snapshot.data.containsKey('authToken')) {
+            if (snapshot.data['authToken'] != null) {
+              if (snapshot.data.containsKey('userName') &&
+                  snapshot.data['userName'] != null) {
+                if (snapshot.data['userName'].toString().isNotEmpty)
+                  _signedInUserName = snapshot.data['userName'].toString();
               }
-              if (snapshot.data['authToken'] == null) {
-                return emailAuthScreen(context);
-              }
+              return FutureBuilder<Map>(
+                future: AuthenticationService.getLoggedInUserDataFromAPI(),
+                builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+                    if(snapshot.hasData) {
+                      print('--------------recent purchases-----------');
+                      print(snapshot.data['data']);
+                      if(snapshot.data['data'].containsKey('courses')) {
+                        if(snapshot.data['data']['courses'] != null) {
+                          return userProfileScreen(context, snapshot.data['data']['courses']);
+                        }
+                      }
+                    } else if (snapshot.hasError) {
+                      return Center(
+                          child: Text('Error while loading data, please retry'));
+                    } else {
+                      //show waiting state
+                      return Center(child: CircularProgressIndicator());
+                    }
+    //              //show full data with preparation done in hasData stage
+                  return Center(child: CircularProgressIndicator());
+                });
+
             }
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text('Error while loading data, please retry'));
-          } else {
-            //show waiting state
-            return Center(child: CircularProgressIndicator());
+            if (snapshot.data['authToken'] == null) {
+              return emailAuthScreen(context);
+            }
           }
-          //show full data with preparation done in hasData stage
+        } else if (snapshot.hasError) {
+          return Center(
+              child: Text('Error while loading data, please retry'));
+        } else {
+          //show waiting state
           return Center(child: CircularProgressIndicator());
-        });
+        }
+//        return FutureBuilder<Map>(
+//            future: _screenData,
+//            builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+//              
+//              //show full data with preparation done in hasData stage
+              return Center(child: CircularProgressIndicator());
+//            });
+      }
+    );
   }
 
   Widget emailAuthScreen(BuildContext context) {
@@ -416,7 +447,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
     );
   }
 
-  Widget userProfileScreen(BuildContext context) {
+  Widget userProfileScreen(BuildContext context, var data) {
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -495,9 +526,9 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                     ListView.builder(
 //                    physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: courseData.length,
+                        itemCount: data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return courseList(courseData[index]);
+                          return courseList(data[index]);
                         })
                   ],
                 ),
@@ -509,14 +540,14 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
     );
   }
 
-  Widget courseList(Map data) {
+  Widget courseList(Map<dynamic,dynamic> data) {
     return ListTile(
       isThreeLine: true,
       contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       leading: ClipRRect(
           borderRadius: BorderRadius.circular(16.0),
-          child: Image.asset(
-            data['imagePath'],
+          child: Image.network(
+            data['courses_image'],
             width: 80.0,
             height: 80.0,
             fit: BoxFit.contain,
@@ -524,12 +555,12 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
       title: Row(
         children: <Widget>[
           Text(
-            data['title'],
+            data['name'],
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
           ),
           Spacer(),
           Text(
-            data['duration'],
+            data['course_duration'],
             style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
           )
         ],
@@ -539,7 +570,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
           Row(
             children: <Widget>[
               Text(
-                data['subtitle'],
+                data['total_sessions'].toString() + (data['total_sessions'] > 1 ? ' Sessions' : ' Session'),
                 style:
                     TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
               ),
@@ -550,13 +581,13 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
             child: Row(
               children: <Widget>[
                 Text(
-                  data['money'].toString(),
+                  data['price'].toString(),
                   style:
                       TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
                 ),
                 Spacer(),
                 Text(
-                  'Purchase on ' + data['purchaseDate'],
+                  'Purchase on ' + data['purchased_date'],
                   style:
                       TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
                 )

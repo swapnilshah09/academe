@@ -1,3 +1,4 @@
+import 'package:academe/screens/subscriptions_sub_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 
@@ -13,6 +14,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       home: MyHomePage(),
+      routes: {
+        SubscriptionsSubScreen.id: (context) => SubscriptionsSubScreen(),
+        MyHomePage.id: (context) => MyHomePage()
+      },
     );
   }
 }
