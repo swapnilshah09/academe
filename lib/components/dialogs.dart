@@ -26,6 +26,32 @@ class Dialogs{
       },
     );
   }
+  void showInfoDialog(BuildContext context, String title, String info) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(info),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OKAY'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   void showConfirmationDialog({@required context,
     @required String confirmationMessage,
     @required String cancelButtonText,
