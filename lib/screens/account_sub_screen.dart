@@ -86,7 +86,8 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 //                    _signedInUserName = snapshot.data['userName'].toString();
 //                }
                 return StreamBuilder<Map>(
-                    stream: AuthenticationService.getLoggedInUserDataFromAPI().asStream(),
+                    stream: AuthenticationService.getLoggedInUserDataFromAPI()
+                        .asStream(),
                     builder:
                         (BuildContext context, AsyncSnapshot<Map> snapshot) {
                       if (snapshot.hasData) {
@@ -224,13 +225,20 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                 onTap: () async {
                   if (_emailFormKey.currentState.validate()) {
                     _emailFormKey.currentState.save();
+                    setState(() {
+                      _loading = true;
+                    });
                     Map<String, Object> result =
                         await EmailAuthService.doesAccountExist(
                             _emailFormEmailFieldController.text.trim());
-
+                    setState(() {
+                      _loading = false;
+                    });
                     if (result.containsKey('error')) {
                       Dialogs()
                           .showErrorDialog(context, 'Oops!', result['error']);
+
+                      return;
                     }
                     if (result["exists"] == true) {
                       setState(() {
@@ -295,18 +303,40 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
               child: Text('Don\'t have an account? Register',
                   style: TextStyle(color: AcademeAppTheme.primaryColor)),
               onPressed: () {
-                _accountExists = false;
-                _accountCheckDone = true;
-                _registrationFormEmailFieldController.text =
-                    _emailFormEmailFieldController.text;
+                setState(() {
+                  _accountExists = false;
+                  _accountCheckDone = true;
+                  _registrationFormEmailFieldController.text =
+                      _emailFormEmailFieldController.text;
+                });
               },
             ),
           ),
           FlatButton(
             child: Text('Forgot Password?',
                 style: TextStyle(color: AcademeAppTheme.primaryColor)),
-            onPressed: () {
-//              handleForgotPassword(false);
+            onPressed: () async {
+              setState(() {
+                _loading = true;
+              });
+
+              Map result = await AuthenticationService.forgotPassword(
+                  _loginFormEmailFieldController.text.trim());
+              if (result.containsKey('error')) {
+                Dialogs().showErrorDialog(context, 'Oops!', result['error']);
+                setState(() {
+                  _loading = false;
+                });
+                return;
+              }
+              if (result.containsKey('data')) {
+                //String data = result['data'];
+                setState(() {
+                  _loading = false;
+                });
+                Dialogs().showInfoDialog(context, 'Password Updated',
+                    'Email with new password sent succesfully');
+              }
             },
           ),
         ],
@@ -436,7 +466,9 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                       Row(
                         children: <Widget>[
                           Text(
-                            data['name']!=null?data['name']:'Academe User',
+                            data['name'] != null
+                                ? data['name']
+                                : 'Academe User',
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
