@@ -8,8 +8,6 @@ import 'package:academe/components/buttons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:academe/components/dialogs.dart';
 import 'package:academe/services/shared_pref_service.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
 
 class AccountSubScreen extends StatefulWidget {
   @override
@@ -37,42 +35,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   final TextEditingController _choosePasswordController =
       TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
-  var courseData = <Map>[
-    {
-      'imagePath': 'assets/design_course/interFace3.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    },
-    {
-      'imagePath': 'assets/design_course/interFace4.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    },
-    {
-      'imagePath': 'assets/design_course/interFace4.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    },
-    {
-      'imagePath': 'assets/design_course/interFace3.png',
-      'title': 'User interface Design',
-      'subtitle': '23 sessions',
-      'duration': '2h 20m',
-      'money': 399,
-      'purchaseDate': '13/04/2020',
-    }
-  ];
   Future<bool> _isAuthenticated;
-  Future<Map> _userData;
 
   @override
   void initState() {
@@ -95,7 +58,6 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
           !_userNameResultMap.containsKey('error')) {
         screenData['authToken'] = _authTokenResultMap['authToken'];
         screenData['userName'] = _userNameResultMap['userName'];
-        _userData = AuthenticationService.getLoggedInUserDataFromAPI();
       } else {
         if (_authTokenResultMap.containsKey('error')) {
           screenData['error'] += _authTokenResultMap['error'];
@@ -114,59 +76,59 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map>(
-      future: _screenData,
-      builder: (context, AsyncSnapshot<Map> snapshot) {
-        if (snapshot.hasData) {
-          //prepare screen
-          if (snapshot.data.containsKey('authToken')) {
-            if (snapshot.data['authToken'] != null) {
-              if (snapshot.data.containsKey('userName') &&
-                  snapshot.data['userName'] != null) {
-                if (snapshot.data['userName'].toString().isNotEmpty)
-                  _signedInUserName = snapshot.data['userName'].toString();
-              }
-              return FutureBuilder<Map>(
-                future: AuthenticationService.getLoggedInUserDataFromAPI(),
-                builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
-                    if(snapshot.hasData) {
-                      print('--------------recent purchases-----------');
-                      print(snapshot.data['data']);
-                      if(snapshot.data['data'].containsKey('courses')) {
-                        if(snapshot.data['data']['courses'] != null) {
-                          return userProfileScreen(context, snapshot.data['data']['courses']);
+        future: _screenData,
+        builder: (context, AsyncSnapshot<Map> snapshot) {
+          if (snapshot.hasData) {
+            //prepare screen
+            if (snapshot.data.containsKey('authToken')) {
+              if (snapshot.data['authToken'] != null) {
+                if (snapshot.data.containsKey('userName') &&
+                    snapshot.data['userName'] != null) {
+                  if (snapshot.data['userName'].toString().isNotEmpty)
+                    _signedInUserName = snapshot.data['userName'].toString();
+                }
+                return FutureBuilder<Map>(
+                    future: AuthenticationService.getLoggedInUserDataFromAPI(),
+                    builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+                      if(snapshot.hasData) {
+                        print('--------------recent purchases-----------');
+                        print(snapshot.data['data']);
+                        if(snapshot.data['data'].containsKey('courses')) {
+                          if(snapshot.data['data']['courses'] != null) {
+                            return userProfileScreen(context, snapshot.data['data']['courses']);
+                          }
                         }
+                      } else if (snapshot.hasError) {
+                        return Center(
+                            child: Text('Error while loading data, please retry'));
+                      } else {
+                        //show waiting state
+                        return Center(child: CircularProgressIndicator());
                       }
-                    } else if (snapshot.hasError) {
-                      return Center(
-                          child: Text('Error while loading data, please retry'));
-                    } else {
-                      //show waiting state
+                      //              //show full data with preparation done in hasData stage
                       return Center(child: CircularProgressIndicator());
-                    }
-    //              //show full data with preparation done in hasData stage
-                  return Center(child: CircularProgressIndicator());
-                });
+                    });
 
+              }
+              if (snapshot.data['authToken'] == null) {
+                return emailAuthScreen(context);
+              }
             }
-            if (snapshot.data['authToken'] == null) {
-              return emailAuthScreen(context);
-            }
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text('Error while loading data, please retry'));
+          } else {
+            //show waiting state
+            return Center(child: CircularProgressIndicator());
           }
-        } else if (snapshot.hasError) {
-          return Center(
-              child: Text('Error while loading data, please retry'));
-        } else {
-          //show waiting state
-          return Center(child: CircularProgressIndicator());
-        }
 //        return FutureBuilder<Map>(
 //            future: _screenData,
 //            builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
-//              
+//
 //              //show full data with preparation done in hasData stage
-              return Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator());
 //            });
-      }
+        }
     );
   }
 
@@ -540,7 +502,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
     );
   }
 
-  Widget courseList(Map<dynamic,dynamic> data) {
+  Widget courseList(Map data) {
     return ListTile(
       isThreeLine: true,
       contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),

@@ -19,7 +19,6 @@ class CourseDetailScreen extends StatefulWidget {
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
   VideoPlayerController _controller;
   VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
   ChewieController _chewieController;
   String videoUrl;
   Map <dynamic,dynamic> courseData;
@@ -55,7 +54,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   @override
   void dispose() {
     _videoPlayerController1.dispose();
-    _videoPlayerController2.dispose();
     _chewieController.dispose();
     super.dispose();
   }
