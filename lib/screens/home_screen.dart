@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
   static String id = 'my_home_page';
+  final int testScreenCount;
+  MyHomePage({
+    @required this.testScreenCount,
+  });
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -22,11 +26,16 @@ class _MyHomePageState extends State<MyHomePage> {
       title: Text('More Info'),
     )
   ];
-  bool authenticated = false;
 
   @override
   void initState() {
     super.initState();
+    if(widget.testScreenCount != null) {
+      this.setState((){
+        _selectedSubScreen = widget.testScreenCount;
+      });
+    }
+
     _isAuthenticated = AuthenticationService.isAuthenticated();
     print('-------change-------');
 //    print(value);
@@ -50,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-//    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: appbar != null ? appbar[_selectedSubScreen] : null,
       bottomNavigationBar: BottomNavigationBar(
@@ -103,11 +111,4 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return SizedBox();
   }
-}
-
-class ScreenArguments {
-  final int selectScreen;
-  final bool showSelectScreen;
-
-  ScreenArguments(this.selectScreen, this.showSelectScreen);
 }

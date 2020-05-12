@@ -348,7 +348,8 @@ class CoursePurchasedDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Buttons.primary(text: 'Start Course', onTap: () {
-              Navigator.pushNamedAndRemoveUntil(context, MyHomePage.id, (_) => false, arguments: ScreenArguments(1, true) );
+//              Navigator.pushNamedAndRemoveUntil(context, MyHomePage.id, (_) => false, arguments: ScreenArguments(1, true) );
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyHomePage(testScreenCount: 1)), (_) => false);
             }),
           )
         ],
