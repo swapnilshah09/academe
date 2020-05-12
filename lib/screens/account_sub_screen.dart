@@ -19,7 +19,6 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   bool _accountExists = false;
   bool _accountCheckDone = false;
   bool _obscureText = true;
-  String _signedInUserName = "Academe User";
   Future<Map> _screenData;
   final GlobalKey<FormState> _emailFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
@@ -35,13 +34,11 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   final TextEditingController _choosePasswordController =
       TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
-  Future<bool> _isAuthenticated;
 
   @override
   void initState() {
     super.initState();
     _screenData = getDataForScreen();
-    _isAuthenticated = AuthenticationService.isAuthenticated();
   }
 
   Future<Map> getDataForScreen() async {
@@ -75,32 +72,38 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map>(
-        future: _screenData,
+    return StreamBuilder<Map>(
+        stream: _screenData.asStream(),
         builder: (context, AsyncSnapshot<Map> snapshot) {
           if (snapshot.hasData) {
             //prepare screen
             if (snapshot.data.containsKey('authToken')) {
               if (snapshot.data['authToken'] != null) {
-                if (snapshot.data.containsKey('userName') &&
-                    snapshot.data['userName'] != null) {
-                  if (snapshot.data['userName'].toString().isNotEmpty)
-                    _signedInUserName = snapshot.data['userName'].toString();
-                }
-                return FutureBuilder<Map>(
-                    future: AuthenticationService.getLoggedInUserDataFromAPI(),
-                    builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
-                      if(snapshot.hasData) {
+//                if (snapshot.data.containsKey('userName') &&
+//                    snapshot.data['userName'] != null) {
+//                  if (snapshot.data['userName'].toString().isNotEmpty)
+//                    print('setting signed in usernma');
+//                    _signedInUserName = snapshot.data['userName'].toString();
+//                }
+                return StreamBuilder<Map>(
+                    stream: AuthenticationService.getLoggedInUserDataFromAPI().asStream(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<Map> snapshot) {
+                      if (snapshot.hasData) {
                         print('--------------recent purchases-----------');
                         print(snapshot.data['data']);
-                        if(snapshot.data['data'].containsKey('courses')) {
-                          if(snapshot.data['data']['courses'] != null) {
-                            return userProfileScreen(context, snapshot.data['data']['courses']);
+                        if (snapshot.data['data'].containsKey('courses')) {
+                          if (snapshot.data['data']['courses'] != null) {
+//                            return userProfileScreen(
+//                                context, snapshot.data['data']['courses']);
+                            return userProfileScreen(
+                                context, snapshot.data['data']);
                           }
                         }
                       } else if (snapshot.hasError) {
                         return Center(
-                            child: Text('Error while loading data, please retry'));
+                            child:
+                                Text('Error while loading data, please retry'));
                       } else {
                         //show waiting state
                         return Center(child: CircularProgressIndicator());
@@ -108,7 +111,6 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                       //              //show full data with preparation done in hasData stage
                       return Center(child: CircularProgressIndicator());
                     });
-
               }
               if (snapshot.data['authToken'] == null) {
                 return emailAuthScreen(context);
@@ -128,8 +130,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
 //              //show full data with preparation done in hasData stage
           return Center(child: CircularProgressIndicator());
 //            });
-        }
-    );
+        });
   }
 
   Widget emailAuthScreen(BuildContext context) {
@@ -435,7 +436,7 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                       Row(
                         children: <Widget>[
                           Text(
-                            _signedInUserName,
+                            data['name']!=null?data['name']:'Academe User',
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
@@ -488,9 +489,9 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                     ListView.builder(
 //                    physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: data.length,
+                        itemCount: data['courses'].length,
                         itemBuilder: (BuildContext context, int index) {
-                          return courseList(data[index]);
+                          return courseList(data['courses'][index]);
                         })
                   ],
                 ),
@@ -532,7 +533,8 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
           Row(
             children: <Widget>[
               Text(
-                data['total_sessions'].toString() + (data['total_sessions'] > 1 ? ' Sessions' : ' Session'),
+                data['total_sessions'].toString() +
+                    (data['total_sessions'] > 1 ? ' Sessions' : ' Session'),
                 style:
                     TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
               ),
@@ -606,9 +608,9 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
         }
       }
       setState(() {
-        if (data.containsKey('name')) {
-          _signedInUserName = data['name'];
-        }
+//        if (data.containsKey('name')) {
+//          _signedInUserName = data['name'];
+//        }
         _loading = false;
         _accountCheckDone = true;
         _accountExists = true;

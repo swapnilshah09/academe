@@ -17,7 +17,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _emailFieldController = TextEditingController();
   Future<Map> _userData;
-
+  bool _loading = false;
   @override
   void initState() {
     super.initState();
@@ -38,8 +38,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         title: Text('Edit Profile'),
       ),
       body: SafeArea(
-        child: FutureBuilder(
-          future: _userData,
+        child: StreamBuilder(
+          stream: _userData.asStream(),
           builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data['data'] == null) {
@@ -53,10 +53,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               }
               Map userDataFromAPI = snapshot.data['data'];
               print('Name from API: ' + userDataFromAPI['name']);
-              if (userDataFromAPI['name'] != null) {
+              if (userDataFromAPI['name'] != null&&_nameFieldController.text.isEmpty) {
                 _nameFieldController.text = userDataFromAPI['name'];
               }
-              if (userDataFromAPI['email'] != null) {
+              if (userDataFromAPI['email'] != null&&_emailFieldController.text.isEmpty) {
                 _emailFieldController.text = userDataFromAPI['email'];
               }
               return Padding(
@@ -85,31 +85,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 50),
-                        child: Buttons.primary(
-                            text: 'Update Details',
-                            onTap: () {
-                              if (updateDetailsFormKey.currentState
-                                  .validate()) {
-                                updateDetailsFormKey.currentState.save();
+                        child: !_loading
+                            ? Buttons.primary(
+                                text: 'Update Details',
+                                onTap: () async {
+                                  if (updateDetailsFormKey.currentState
+                                      .validate()) {
+                                    updateDetailsFormKey.currentState.save();
+                                    String newName;
+                                    String newEmail;
+                                    setState(() {
+                                      _loading = true;
+                                    });
+                                    if (_nameFieldController.text.trim() !=
+                                        userDataFromAPI['name']) {
+                                      newName =
+                                          _nameFieldController.text.trim();
+                                    }
+                                    if (_emailFieldController.text.trim() !=
+                                        userDataFromAPI['email']) {
+                                      newEmail =
+                                          _emailFieldController.text.trim();
+                                    }
+                                    Map updateProfileResult =
+                                        await ProfileService
+                                            .updateUserProfile(
+                                      name: newName,
+                                      email: newEmail,
+                                    );
+                                    if (updateProfileResult
+                                        .containsKey('error')) {
+                                      Dialogs().showErrorDialog(
+                                          context,
+                                          'Oops!',
+                                          updateProfileResult['error']);
+                                      setState(() {
+                                        _loading = false;
+                                      });
+                                      return;
+                                    }
 
-                                //PawfectDialogs().showLoadingDialog(context);
-//                    Map<String, Object> result =
-//                        await ProfileUpdateService().updateName(
-//                        user.data,
-//                        _nameFieldController.text.trim());
-//                    Navigator.of(context, rootNavigator: true)
-//                        .pop('dialog');
-//                    if (result.containsKey('error')) {
-//                      PawfectDialogs().showErrorDialog(
-//                          context, 'Oops!', result['error']);
-//                      return;
-//                    }
-//                    reloadStream();
-//                    Scaffold.of(context).showSnackBar(SnackBar(
-//                        content:
-//                        Text('Name successfully updated.')));
-                              }
-                            }),
+                                    setState(() {
+                                      _userData = AuthenticationService
+                                          .getLoggedInUserDataFromAPI();
+                                      _loading = false;
+                                    });
+
+                                    Scaffold.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Profile successfully updated.'),
+                                      ),
+                                    );
+                                  }
+                                })
+                            : Center(child: CircularProgressIndicator()),
                       ),
                       InkWell(
                         onTap: () {
@@ -231,11 +261,11 @@ class ChangePasswordDialog extends StatelessWidget {
                       : Buttons.primary(
                           text: 'Change Password',
                           onTap: () async {
-                            setState(() {
-                              _loading = true;
-                            });
                             if (_changePasswordFormKey.currentState
                                 .validate()) {
+                              setState(() {
+                                _loading = true;
+                              });
                               _changePasswordFormKey.currentState.save();
                               Map changePasswordResult =
                                   await ProfileService.changePassword(
@@ -255,15 +285,15 @@ class ChangePasswordDialog extends StatelessWidget {
                               setState(() {
                                 _loading = false;
                               });
+                              Fluttertoast.showToast(
+                                  msg: "Password update successful",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              Navigator.of(context).pop();
                             }
-                            Fluttertoast.showToast(
-                                msg: "Password update successful",
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                            Navigator.of(context).pop();
                           }),
                 )
               ],
