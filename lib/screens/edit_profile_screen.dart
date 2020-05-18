@@ -68,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Text('Full Name'),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 18.0),
-                        child: Fields.borderedTextFormField(
+                        child: Fields.customTextField(
                           controller: _nameFieldController,
                           textInputType: TextInputType.text,
                           validator: TextFieldValidators.nameValidator,
@@ -77,7 +77,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Text('Email ID'),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 42),
-                        child: Fields.borderedTextFormField(
+                        child: Fields.customTextField(
                           controller: _emailFieldController,
                           textInputType: TextInputType.emailAddress,
                           validator: TextFieldValidators.emailValidator,
@@ -218,7 +218,7 @@ class ChangePasswordDialog extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 0),
-                          child: Fields.borderedTextFormField(
+                          child: Fields.customTextField(
                             controller: _currentPasswordFieldController,
                             textInputType: TextInputType.text,
                             validator: TextFieldValidators.passwordValidator,
@@ -231,7 +231,7 @@ class ChangePasswordDialog extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 0),
-                          child: Fields.borderedTextFormField(
+                          child: Fields.customTextField(
                             controller: _newPasswordFieldController,
                             textInputType: TextInputType.text,
                             validator: TextFieldValidators.passwordValidator,
@@ -244,7 +244,7 @@ class ChangePasswordDialog extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 0),
-                          child: Fields.borderedTextFormField(
+                          child: Fields.customTextField(
                             controller: _newPasswordConfirmFieldController,
                             textInputType: TextInputType.text,
                             validator: TextFieldValidators.passwordValidator,

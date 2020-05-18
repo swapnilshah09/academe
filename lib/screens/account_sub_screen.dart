@@ -91,14 +91,16 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                     builder:
                         (BuildContext context, AsyncSnapshot<Map> snapshot) {
                       if (snapshot.hasData) {
-                        print('--------------recent purchases-----------');
-                        print(snapshot.data['data']);
-                        if (snapshot.data['data'].containsKey('courses')) {
-                          if (snapshot.data['data']['courses'] != null) {
+                        if (snapshot.data['data'] != null) {
+                          print('--------------recent purchases-----------');
+                          print(snapshot.data['data']);
+                          if (snapshot.data['data'].containsKey('courses')) {
+                            if (snapshot.data['data']['courses'] != null) {
 //                            return userProfileScreen(
 //                                context, snapshot.data['data']['courses']);
-                            return userProfileScreen(
-                                context, snapshot.data['data']);
+                              return userProfileScreen(
+                                  context, snapshot.data['data']);
+                            }
                           }
                         }
                       } else if (snapshot.hasError) {

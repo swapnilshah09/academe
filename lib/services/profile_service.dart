@@ -28,7 +28,7 @@ class ProfileService {
         requestData['email'] = email;
       }
       var body = convert.jsonEncode(requestData);
-      print("Profile update request body: "+requestData.toString());
+      print("Profile update request body: " + requestData.toString());
       var response = await http.post(uri,
           headers: {"Content-Type": "application/json"}, body: body);
       Map<String, dynamic> responseMap = convert.jsonDecode(response.body);
@@ -77,7 +77,45 @@ class ProfileService {
       result['data'] = responseMap["data"];
       return result;
     } catch (e) {
-      result['error'] = 'Error occured while upting password: ' + e.toString();
+      result['error'] =
+          'Error occured while updating password: ' + e.toString();
+      return result;
+    }
+  }
+
+  static Future<Map<String, Object>> contactUs(
+      String subject, String message) async {
+    String authToken;
+    Map<String, Object> result = new Map();
+    try {
+      Map _authTokenResult =
+          await SharedPrefService.fetchFromSharedPref('authToken');
+      if (_authTokenResult.containsKey('error')) {
+        throw Exception(_authTokenResult['error']);
+      }
+      if (_authTokenResult.containsKey('authToken') &&
+          _authTokenResult['authToken'] != null &&
+          _authTokenResult['authToken'].toString().isNotEmpty) {
+        authToken = _authTokenResult['authToken'];
+      }
+      var uri = Uri.https(kAPIDomain, '/api/contactus');
+      Map requestData = {
+        "subject": subject,
+        "message": message,
+        "token": authToken
+      };
+      var body = convert.jsonEncode(requestData);
+      var response = await http.post(uri,
+          headers: {"Content-Type": "application/json"}, body: body);
+      Map<String, dynamic> responseMap = convert.jsonDecode(response.body);
+      print('Response: ' + responseMap.toString());
+      if (responseMap["error"] == true) {
+        throw Exception(responseMap["cause"].toString());
+      }
+      result['data'] = responseMap["data"];
+      return result;
+    } catch (e) {
+      result['error'] = 'Error occured while sending message: ' + e.toString();
       return result;
     }
   }

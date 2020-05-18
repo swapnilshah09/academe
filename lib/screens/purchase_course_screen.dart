@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
 import 'package:academe/services/shared_pref_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:academe/screens/home_screen.dart';
 
 class PurchaseCourseScreen extends StatefulWidget {
   static String id = 'purchase_course_screen';
@@ -78,6 +79,11 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                 ),
               );
             } else {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MyHomePage(subScreenIndex: 2)),
+                      (_) => false);
               Fluttertoast.showToast(
                   msg: "You need to login before making a payment.", toastLength: Toast.LENGTH_LONG);
             }

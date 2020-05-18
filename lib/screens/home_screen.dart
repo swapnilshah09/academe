@@ -4,12 +4,13 @@ import 'package:academe/screens/more_sub_screen.dart';
 import 'package:academe/screens/subscriptions_sub_screen.dart';
 import 'package:academe/services/authentication_service.dart';
 import 'package:flutter/material.dart';
+import 'package:academe/utils/academe_custom_icons_icons.dart';
 
 class MyHomePage extends StatefulWidget {
   static String id = 'my_home_page';
-  final int testScreenCount;
+  final int subScreenIndex;
   MyHomePage({
-    @required this.testScreenCount,
+    @required this.subScreenIndex,
   });
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -30,9 +31,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    if(widget.testScreenCount != null) {
+    if(widget.subScreenIndex != null) {
       this.setState((){
-        _selectedSubScreen = widget.testScreenCount;
+        _selectedSubScreen = widget.subScreenIndex;
       });
     }
 
@@ -67,19 +68,19 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: _selectedSubScreen,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(AcademeCustomIcons.home),
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.subscriptions),
+            icon: Icon(AcademeCustomIcons.subscriptions),
             title: Text('Subscriptions'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(AcademeCustomIcons.account),
             title: Text('Account'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.more_horiz),
+            icon: Icon(AcademeCustomIcons.more),
             title: Text('More'),
           ),
         ],

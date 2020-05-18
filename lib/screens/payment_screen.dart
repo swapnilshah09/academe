@@ -225,7 +225,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(
                   Icons.security,
-                  color: Colors.green,
+                  color: AcademeAppTheme.primaryColor,
                   size: 60,
                 ),
               ),
@@ -241,24 +241,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Payments partner',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                    Image.asset(
-                      'assets/images/razorpay_seal.png',
-                      height: 45,
-                      width: 150,
-                    )
-                  ],
-                ),
-              ),
+//              Expanded(
+//                child: Column(
+//                  mainAxisAlignment: MainAxisAlignment.end,
+//                  crossAxisAlignment: CrossAxisAlignment.center,
+//                  children: <Widget>[
+//                    Text(
+//                      'Payments partner',
+//                      textAlign: TextAlign.center,
+//                      style: TextStyle(fontStyle: FontStyle.italic),
+//                    ),
+//                    Image.asset(
+//                      'assets/images/razorpay_seal.png',
+//                      height: 45,
+//                      width: 150,
+//                    )
+//                  ],
+//                ),
+//              ),
             ],
           ),
         ),
@@ -349,7 +349,7 @@ class CoursePurchasedDialog extends StatelessWidget {
             padding: const EdgeInsets.all(20.0),
             child: Buttons.primary(text: 'Start Course', onTap: () {
 //              Navigator.pushNamedAndRemoveUntil(context, MyHomePage.id, (_) => false, arguments: ScreenArguments(1, true) );
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyHomePage(testScreenCount: 1)), (_) => false);
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyHomePage(subScreenIndex: 1)), (_) => false);
             }),
           )
         ],

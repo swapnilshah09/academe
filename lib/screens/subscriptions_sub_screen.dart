@@ -97,7 +97,7 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
                     Padding(
                       padding: const EdgeInsets.all(28.0),
                       child: Buttons.primary(text: 'Login', onTap: (){
-                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyHomePage(testScreenCount: 2)), (_) => false);
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyHomePage(subScreenIndex: 2)), (_) => false);
                       }),
                     )
                   ],
