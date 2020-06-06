@@ -1,3 +1,4 @@
+import 'package:academe/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -159,14 +160,15 @@ class StreamView extends StatelessWidget {
                                           style: TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 12,
+                                            color: AcademeAppTheme.darkText
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
+//                                  SizedBox(
+//                                    height: 4,
+//                                  ),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.only(top:0.0),

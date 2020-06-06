@@ -52,6 +52,28 @@ class EmailAuthService {
     }
   }
 
+  static Future<Map<String, Object>> signInWithGMail(
+      String accessToken) async {
+    Map<String, Object> result = new Map();
+    try {
+      var uri = Uri.https(kAPIDomain, '/api/loginwithgoogle');
+      Map requestData = {"idtoken": accessToken};
+      var body = convert.jsonEncode(requestData);
+      var response = await http.post(uri,
+          headers: {"Content-Type": "application/json"}, body: body);
+      Map<String, dynamic> responseMap = convert.jsonDecode(response.body);
+      print('Response: ' + responseMap.toString());
+      if (responseMap["error"] == true) {
+        throw Exception(responseMap["cause"].toString());
+      }
+      result['data'] = responseMap["data"];
+      return result;
+    } catch (e) {
+      result['error'] = 'Error occured while logging in: ' + e.toString();
+      return result;
+    }
+  }
+
   static Future<Map<String, Object>> doesAccountExist(String email) async {
     Map<String, Object> result = new Map();
     try {

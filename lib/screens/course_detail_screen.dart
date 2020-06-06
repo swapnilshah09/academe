@@ -58,7 +58,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   getCourseData() async {
-    var url = 'http://159.65.154.185:89/api/coursedetails/'+widget.courseDetails['id'].toString();
+    var url = Uri.https(kAPIDomain, '/api/coursedetails/'+widget.courseDetails['id'].toString());
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -74,6 +74,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   void dispose() {
     _videoPlayerController1.dispose();
     _chewieController.dispose();
+    print('------dispose-------');
     super.dispose();
   }
 
@@ -110,6 +111,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               ),
             ],
           ),
+          courseSubscribed == true && courseSubscribed != null ?
+              Text('') :
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
@@ -194,7 +197,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       Text(
                         'What is covered in this course?',
                         style: TextStyle(
-                            fontSize: 12, color: AcademeAppTheme.lightText),
+                            fontSize: 13, color: AcademeAppTheme.lighterText),
                       ),
                     ],
                   ),
@@ -203,7 +206,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     child: Text(
                       widget.courseDetails['description'],
                       style: TextStyle(
-                          fontSize: 12, color: AcademeAppTheme.lightText),
+                          fontSize: 14, color: AcademeAppTheme.darkText),
                     ),
                   )
                 ],
@@ -232,7 +235,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                             widget.courseDetails['total_sessions'].toString()+' Sessions',
                             style: TextStyle(
                                 fontSize: 16,
-                                color: AcademeAppTheme.lightText),
+                                color: AcademeAppTheme.darkText),
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -282,64 +285,85 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               videoPlayerController: _videoPlayerController1,
               aspectRatio: 3 / 2,
               autoInitialize: true,
+              autoPlay: true,
+              fullScreenByDefault: true
             );
           });
         } else {
           Fluttertoast.showToast(
               msg: "You need to purchase this course to view this session.", toastLength: Toast.LENGTH_LONG);
+          Navigator.push<dynamic>(
+            context,
+            MaterialPageRoute<dynamic>(
+              builder: (BuildContext context) => PurchaseCourseScreen(
+                selectedCourseData: widget.courseDetails,
+              ),
+            ),
+          );
         }
       },
       isThreeLine: true,
       contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       leading: ClipRRect(
           borderRadius: BorderRadius.circular(16.0),
-          child: Image.network(
-            data['image'],
-            width: 80.0,
-            height: 80.0,
-            fit: BoxFit.contain,
+          child: Container(
+            width: 100.0,
+            height: 100.0,
+            child: Image.network(
+              data['image'],
+              width: 100.0,
+              height: 100.0,
+              fit: BoxFit.contain,
+            ),
           )),
-      title: Row(
-        children: <Widget>[
-          Text(
-            data['name'],
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-          ),
-          Spacer(),
-          Text(
-            data['course_duration'],
-            style: TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
-          )
-        ],
+      title: Padding(
+        padding: const EdgeInsets.only(top: 8.0, right: 8.0),
+        child: Row(
+          children: <Widget>[
+            Text(
+              data['name'],
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+            ),
+            Spacer(),
+            Text(
+              data['course_duration'],
+              style: TextStyle(color: AcademeAppTheme.darkText, fontSize: 12),
+            )
+          ],
+        ),
       ),
-      subtitle: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Flexible(
-                child: Text(
-                  data['description'],
-                  style:
-                      TextStyle(color: AcademeAppTheme.lightText, fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: Row(
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 8.0, right: 8.0),
+        child: Column(
+          children: <Widget>[
+            Row(
               children: <Widget>[
-                Text(
-                  'Start Now >',
-                  style: TextStyle(
-                      color: AcademeAppTheme.primaryColor,
-                      fontSize: 12
+                Flexible(
+                  child: Text(
+                    data['description'],
+                    style:
+                        TextStyle(color: AcademeAppTheme.darkText, fontSize: 12),
                   ),
                 ),
               ],
             ),
-          )
-        ],
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Start Now >',
+                    style: TextStyle(
+                        color: AcademeAppTheme.primaryColor,
+                        fontSize: 12,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

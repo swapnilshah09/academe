@@ -36,6 +36,8 @@ class AuthenticationService {
       if (_authTokenResult.containsKey('authToken') &&
           _authTokenResult['authToken'] != null &&
           _authTokenResult['authToken'].toString().isNotEmpty) {
+        print('---------service---------');
+        print(_authTokenResult['authToken']);
         Map<String, String> params = {
           "token": _authTokenResult['authToken'],
         };

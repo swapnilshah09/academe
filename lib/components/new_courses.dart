@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
+import 'package:academe/constant.dart';
 
 class NewCourses extends StatefulWidget {
   const NewCourses({Key key, this.callBack, this.url}) : super(key: key);
@@ -24,10 +25,15 @@ class _NewCoursesState extends State<NewCourses>
 
   Future getCourses() async {
     var url = widget.url;
+    print('----------popular courses-------------');
+    print(widget.url);
     var response = await http.get(url);
+//    print(response.statusCode);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       popularCourses = jsonResponse['data'];
+      print('----------popular courses-------------');
+      print(popularCourses);
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
@@ -135,6 +141,7 @@ class CategoryView extends StatelessWidget {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12,
+                                                color: AcademeAppTheme.darkText
                                               ),
                                             ),
                                           ],
@@ -150,6 +157,7 @@ class CategoryView extends StatelessWidget {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12,
+                                                color: AcademeAppTheme.darkText
                                               ),
                                             ),
                                           ],
@@ -178,7 +186,7 @@ class CategoryView extends StatelessWidget {
                           child: AspectRatio(
                               aspectRatio: 1.0,
                               child: Image.network(
-                                  category['courses_image'] !=null ? category['courses_image'] : 'http://159.65.154.185:89/storage/Hindi-Literature.jpeg',
+                                  category['courses_image'] !=null ? category['courses_image'] : (kAPIDomain+'/storage/Hindi-Literature.jpeg'),
                                 fit: BoxFit.contain,
                               ),
                           ),

@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:academe/constant.dart';
+import 'package:academe/screens/all_streams_screen.dart';
 import 'package:academe/screens/edit_profile_screen.dart';
 import 'package:academe/services/authentication_service.dart';
 import 'package:academe/services/email_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/utils/text_field_validators.dart';
 import 'package:academe/components/buttons.dart';
+import 'package:flutter/painting.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:academe/components/dialogs.dart';
 import 'package:academe/services/shared_pref_service.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AccountSubScreen extends StatefulWidget {
   @override
@@ -34,6 +39,8 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
   final TextEditingController _choosePasswordController =
       TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
+
+  GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   void initState() {
@@ -96,11 +103,100 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                           print(snapshot.data['data']);
                           if (snapshot.data['data'].containsKey('courses')) {
                             if (snapshot.data['data']['courses'] != null) {
-//                            return userProfileScreen(
-//                                context, snapshot.data['data']['courses']);
+                              if(snapshot.data['data']['courses'].length == 0) {
+                                return ListView(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0, left: 16, right: 16, bottom: 8),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Hello,',
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  Text(
+                                                    snapshot.data['data']['name'] != null
+                                                        ? snapshot.data['data']['name']
+                                                        : 'Academe User',
+                                                    style: TextStyle(
+                                                        fontSize: 24, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Spacer(),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      Navigator.push<dynamic>(
+                                                        context,
+                                                        MaterialPageRoute<dynamic>(
+                                                          builder: (BuildContext context) =>
+                                                              EditProfileScreen(),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      'Edit profile',
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: AcademeAppTheme.primaryColor,
+                                                          fontWeight: FontWeight.w700),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.15),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Image.asset('assets/images/no-data.png'),
+                                          Text(
+                                            'You don’t have any recent purchases yet.',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.grey
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(28.0),
+                                            child: Buttons.primary(text: 'View All Streams', onTap: (){
+                                              Navigator.push<dynamic>(
+                                                context,
+                                                MaterialPageRoute<dynamic>(
+                                                  builder: (BuildContext context) => AllStreams(),
+                                                ),
+                                              );
+                                            }),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
                               return userProfileScreen(
                                   context, snapshot.data['data']);
                             }
+//                            return userProfileScreen(
+//                                context, snapshot.data['data']);
+
                           }
                         }
                       } else if (snapshot.hasError) {
@@ -206,6 +302,24 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
     );
   }
 
+  Future<void> _handleSignIn() async {
+    try {
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+
+      GoogleSignInAuthentication googleAuth;
+      googleAuth = await googleUser.authentication;
+      print('------------response user------------');
+      print(googleUser);
+      print('------------response token------------');
+      print(googleAuth.idToken);
+      print(googleAuth.accessToken);
+      googleSignIn(googleAuth.accessToken);
+
+    } catch (error) {
+      print(error);
+    }
+  }
+
   Widget emailForm() {
     return Form(
       key: _emailFormKey,
@@ -259,7 +373,16 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
                     }
                   }
                 }),
-          )
+          ),
+          Platform.isAndroid ?
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 30.0, 0, 0),
+            child: Buttons.googleButton(
+                text: 'Continue using Gmail',
+                onTap: () async {
+                  _handleSignIn();
+                }),
+          ) : Text(''),
         ],
       ),
     );
@@ -632,6 +755,61 @@ class _AccountSubScreenState extends State<AccountSubScreen> {
       if (data.containsKey('name')) {
         Map nameTokenResult =
             await SharedPrefService.storeInSharedPref('userName', data['name']);
+
+        if (nameTokenResult.containsKey('error')) {
+          Dialogs().showErrorDialog(context, 'Oops!', nameTokenResult['error']);
+          setState(() {
+            _loading = false;
+          });
+          return;
+        }
+      }
+      setState(() {
+//        if (data.containsKey('name')) {
+//          _signedInUserName = data['name'];
+//        }
+        _loading = false;
+        _accountCheckDone = true;
+        _accountExists = true;
+        _screenData = getDataForScreen();
+      });
+    }
+  }
+
+  void googleSignIn(String accessToken) async {
+    setState(() {
+      _loading = true;
+    });
+
+    Map<String, Object> result =
+    await EmailAuthService.signInWithGMail(
+      accessToken,
+    );
+    if (result.containsKey('error')) {
+      Dialogs().showErrorDialog(context, 'Oops!', result['error']);
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+    if (result.containsKey('data')) {
+      Map data = result['data'];
+
+      if (data.containsKey('token')) {
+        Map tokenResult = await SharedPrefService.storeInSharedPref(
+            'authToken', data['token']);
+
+        if (tokenResult.containsKey('error')) {
+          Dialogs().showErrorDialog(context, 'Oops!', tokenResult['error']);
+          setState(() {
+            _loading = false;
+          });
+          return;
+        }
+      }
+      if (data.containsKey('name')) {
+        Map nameTokenResult =
+        await SharedPrefService.storeInSharedPref('userName', data['name']);
 
         if (nameTokenResult.containsKey('error')) {
           Dialogs().showErrorDialog(context, 'Oops!', nameTokenResult['error']);

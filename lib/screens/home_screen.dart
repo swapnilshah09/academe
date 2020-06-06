@@ -60,33 +60,84 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appbar != null ? appbar[_selectedSubScreen] : null,
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 12,
-        currentIndex: _selectedSubScreen,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(AcademeCustomIcons.home),
-            title: Text('Home'),
+    return StreamBuilder(
+      stream: AuthenticationService.isAuthenticated().asStream(),
+      builder: (context, snapshot) {
+        if (snapshot.data == true && snapshot.data != null) {
+          appbar = [
+            null,
+            AppBar(title: Text('Subscriptions')),
+            AppBar(title: Text('Your Account')),
+            AppBar(
+              title: Text('More Info'),
+            )
+          ];
+        } else {
+          appbar = [
+            null,
+            AppBar(title: Text('Subscriptions')),
+            null,
+            AppBar(
+              title: Text('More Info'),
+            )
+          ];
+        }
+        return Scaffold(
+          appBar: appbar[_selectedSubScreen],
+//          backgroundColor: Colors.white,
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            selectedFontSize: 12,
+            currentIndex: _selectedSubScreen,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(AcademeCustomIcons.home),
+                title: Text('Home'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(AcademeCustomIcons.subscriptions),
+                title: Text('Subscriptions'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(AcademeCustomIcons.account),
+                title: Text('Account'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(AcademeCustomIcons.more),
+                title: Text('More'),
+              ),
+            ],
+            onTap: _onItemTap,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(AcademeCustomIcons.subscriptions),
-            title: Text('Subscriptions'),
+          body: StreamBuilder(
+            stream: AuthenticationService.isAuthenticated().asStream(),
+            builder: (context, snapshot) {
+              print('-----------snapshot---------------');
+              print(snapshot.data);
+              if (snapshot.data == true && snapshot.data != null) {
+                appbar = [
+                  null,
+                  AppBar(title: Text('Subscriptions')),
+                  AppBar(title: Text('Your Account')),
+                  AppBar(
+                    title: Text('More Info'),
+                  )
+                ];
+              } else {
+                appbar = [
+                  null,
+                  AppBar(title: Text('Subscriptions')),
+                  null,
+                  AppBar(
+                    title: Text('More Info'),
+                  )
+                ];
+              }
+              return showSubScreen(_selectedSubScreen);
+            }
           ),
-          BottomNavigationBarItem(
-            icon: Icon(AcademeCustomIcons.account),
-            title: Text('Account'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(AcademeCustomIcons.more),
-            title: Text('More'),
-          ),
-        ],
-        onTap: _onItemTap,
-      ),
-      body: showSubScreen(_selectedSubScreen),
+        );
+      }
     );
   }
 

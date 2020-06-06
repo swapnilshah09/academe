@@ -60,7 +60,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
   }
 
   getStreamData() async {
-    var url = 'http://159.65.154.185:89/api/streamdetails/'+widget.streamId['id'].toString();
+    var url = Uri.https(kAPIDomain, '/api/streamdetails/'+widget.streamId['id'].toString());
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -95,7 +95,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                     children: <Widget>[
                       Text(
                         'About '+widget.streamId['name'],
-                        style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
+                        style: TextStyle(fontSize: 14, color: AcademeAppTheme.lighterText),
                       ),
                     ],
                   ),
@@ -103,7 +103,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
                       widget.streamId['description'],
-                      style: TextStyle(fontSize: 12, color: AcademeAppTheme.lightText),
+                      style: TextStyle(fontSize: 15, color: AcademeAppTheme.darkText),
 
                     ),
                   )
@@ -200,7 +200,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
           Text(
             data['course_duration'],
             style: TextStyle(
-                color: AcademeAppTheme.lightText,
+                color: AcademeAppTheme.darkText,
                 fontSize: 12
             ),
           )
@@ -213,7 +213,7 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
               Text(
                 data['total_sessions'].toString()+' Sessions',
                 style: TextStyle(
-                    color: AcademeAppTheme.lightText,
+                    color: AcademeAppTheme.darkText,
                     fontSize: 12
                 ),
               ),
@@ -227,7 +227,8 @@ class _StreamDetailScreenState extends State<StreamDetailScreen> {
                   'View Course',
                   style: TextStyle(
                       color: AcademeAppTheme.primaryColor,
-                      fontSize: 12
+                      fontSize: 12,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
               ],

@@ -1,3 +1,4 @@
+import 'package:academe/constant.dart';
 import 'package:academe/screens/stream_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/components/streams_view.dart';
@@ -27,7 +28,7 @@ class _AllStreamsState extends State<AllStreams> {
                   ),
                 );
               },
-              url: 'http://159.65.154.185:89/api/streamlist',
+              url: 'https://'+kAPIDomain+'/api/streamlist',
             )
           ],
         ),

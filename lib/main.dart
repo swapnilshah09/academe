@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Academe',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
+        scaffoldBackgroundColor: const Color(0xFFFFFFFF)
       ),
       home: MyHomePage(),
       routes: {

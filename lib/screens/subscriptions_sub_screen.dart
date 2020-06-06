@@ -1,3 +1,4 @@
+import 'package:academe/screens/all_streams_screen.dart';
 import 'package:academe/services/authentication_service.dart';
 import 'package:flutter/material.dart';
 import 'package:academe/constant.dart';
@@ -46,13 +47,31 @@ class _SubscriptionsSubScreenState extends State<SubscriptionsSubScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Center(
-                            child: Text(
-                          'Oops! It seems you have not subscribed to any courses yet.',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                          textAlign: TextAlign.center,
-                        )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image.asset('assets/images/no-data.png'),
+                                Text(
+                                  'You don’t have any subscriptions yet.',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.grey
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(28.0),
+                                  child: Buttons.primary(text: 'View All Streams', onTap: (){
+                                    Navigator.push<dynamic>(
+                                      context,
+                                      MaterialPageRoute<dynamic>(
+                                        builder: (BuildContext context) => AllStreams(),
+                                      ),
+                                    );
+                                  }),
+                                )
+                              ],
+                            )),
                       );
                     }
                     return Padding(
